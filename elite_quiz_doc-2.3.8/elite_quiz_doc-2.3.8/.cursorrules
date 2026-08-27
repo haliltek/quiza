@@ -1,0 +1,57 @@
+# Elite Quiz Documentation Rules
+
+## Documentation Standards
+1. Write for users with basic technical knowledge
+2. Use clear, non-technical language where possible
+3. Include visual aids and screenshots
+4. Follow markdown best practices
+5. Keep documentation up-to-date
+
+## File Organization
+1. Organize by user journey
+2. Use clear, descriptive names
+3. Group related content
+4. Follow Docusaurus conventions
+5. Use appropriate file extensions
+
+## Content Guidelines
+1. Start with quick-start guide
+2. Use step-by-step instructions
+3. Include troubleshooting
+4. Add visual examples
+5. Link related content
+
+## Technical Writing
+1. Use active voice
+2. Be specific and clear
+3. List prerequisites
+4. Provide context
+5. Use consistent terms
+
+## Examples and Guides
+1. Include screenshots
+2. Show complete workflows
+3. Use proper formatting
+4. Explain each step
+5. Include error handling
+
+## Version Control
+1. Use semantic versioning
+2. Document changes
+3. Update version numbers
+4. Maintain changelog
+5. Tag releases
+
+## Review Process
+1. Check user clarity
+2. Verify instructions
+3. Test setup steps
+4. Review formatting
+5. Validate links
+
+## Maintenance
+1. Regular updates
+2. Version checks
+3. Fix broken links
+4. Update content
+5. Optimize performance 

@@ -1,0 +1,64 @@
+{
+  "name": "elite-quiz-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Documentation for Elite Quiz Web App",
+  "homepage": "https://wrteam.in",
+  "author": "WRTeam",
+  "scripts": {
+    "build": "docusaurus build",
+    "clear": "docusaurus clear",
+    "deploy": "docusaurus deploy",
+    "docusaurus": "docusaurus",
+    "format": "bunx prettier --write .",
+    "format:check": "bunx prettier --check .",
+    "serve": "docusaurus serve",
+    "spellcheck": "bunx cspell \"**/*.{js,jsx,ts,tsx,md,mdx,json}\"",
+    "start": "docusaurus start",
+    "swizzle": "docusaurus swizzle",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "write-translations": "docusaurus write-translations",
+    "cleanup:images": "node cleanup-unused-images.js",
+    "cleanup:images:delete": "node cleanup-unused-images.js --delete --confirm"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.9.2",
+    "@docusaurus/plugin-google-gtag": "^3.9.2",
+    "@docusaurus/preset-classic": "^3.9.2",
+    "@docusaurus/theme-mermaid": "3.9.2",
+    "@easyops-cn/docusaurus-search-local": "^0.48.5",
+    "@mdx-js/react": "^3.1.0",
+    "@n8n/chat": "0.60.0",
+    "@svgr/webpack": "^8.1.0",
+    "caniuse-lite": "1.0.30001749",
+    "clsx": "^1.2.1",
+    "dotenv": "17.2.3",
+    "file-loader": "^6.2.0",
+    "prism-react-renderer": "^2.4.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "url-loader": "^4.1.1"
+  },
+  "devDependencies": {
+    "cspell": "^8.6.0",
+    "glob": "11.0.3",
+    "prettier": "^3.2.5",
+    "prettier-plugin-packagejson": "^2.4.11"
+  },
+  "trustedDependencies": [
+    "prettier",
+    "cspell"
+  ]
+}

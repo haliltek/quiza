@@ -1,0 +1,201 @@
+/**
+ * Custom Chat Widget Styles - Integrated with Docusaurus Theme
+ * Automatically adapts to light/dark mode using Docusaurus CSS variables
+ */
+
+:root {
+  /* === PRIMARY COLORS === */
+  /* Use Docusaurus primary color directly */
+  --chat--color-primary: var(--ifm-color-primary);
+  --chat--color-primary-shade-50: var(--ifm-color-primary-dark);
+  --chat--color-primary-shade-100: var(--ifm-color-primary-darker);
+
+  /* === SURFACE COLORS === */
+  /* Background colors that adapt to theme */
+  --chat--color-white: var(--ifm-background-color);
+  /* Main page background */
+  --chat--color-light: var(--ifm-background-surface-color);
+  /* Cards/surfaces */
+  --chat--color-secondary: var(--ifm-background-surface-color);
+  /* Secondary surfaces */
+  --chat--color-light-shade-50: var(--ifm-color-emphasis-100);
+  /* Tertiary surfaces */
+  --chat--color-secondary-shade-50: var(--ifm-color-emphasis-200);
+  /* Borders */
+
+  /* === TEXT COLORS === */
+  /* Text colors that adapt to theme */
+  --chat--color-dark: var(--ifm-font-color-base);
+  /* Primary text */
+  --chat--color-medium: var(--ifm-font-color-secondary);
+  /* Secondary text */
+  --chat--color-disabled: var(--ifm-color-emphasis-600);
+  /* Disabled text */
+  --chat--color-typing: var(--ifm-font-color-secondary);
+  /* Typing indicator */
+
+  /* === LAYOUT & SPACING === */
+  --chat--spacing: 1rem;
+  --chat--border-radius: 0.5rem;
+  --chat--transition-duration: 200ms;
+
+  /* === WINDOW DIMENSIONS === */
+  --chat--window--width: 600px;
+  --chat--window--height: 800px;
+
+  /* === HEADER STYLES === */
+  --chat--header-height: 0;
+  /* Hide header or set to 'auto' to show */
+  --chat--header--padding: 0;
+  --chat--header--background: var(--ifm-background-surface-color);
+  --chat--header--color: var(--ifm-font-color-base);
+  --chat--header--border-top: none;
+  --chat--header--border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  --chat--heading--font-size: 1.5rem;
+  --chat--subtitle--font-size: 0.875rem;
+  --chat--subtitle--line-height: 1.6;
+
+  /* === INPUT AREA === */
+  --chat--textarea--height: 50px;
+
+  /* === MESSAGE STYLES === */
+  --chat--message--font-size: 1rem;
+  --chat--message--padding: 1rem;
+  --chat--message--border-radius: 1rem;
+  --chat--message-line-height: 1.6;
+
+  /* Bot messages - lighter background */
+  --chat--message--bot--background: var(--ifm-background-surface-color);
+  --chat--message--bot--color: var(--ifm-font-color-base);
+  --chat--message--bot--border: 1px solid var(--ifm-color-emphasis-200);
+
+  /* User messages - primary color accent */
+  --chat--message--user--background: var(--ifm-color-primary);
+  --chat--message--user--color: #ffffff;
+  --chat--message--user--border: none;
+
+  /* Code blocks in messages */
+  --chat--message--pre--background: var(--ifm-color-emphasis-100);
+
+  /* === TOGGLE BUTTON === */
+  --chat--toggle--background: var(--ifm-color-primary);
+  --chat--toggle--hover--background: var(--ifm-color-primary-dark);
+  --chat--toggle--active--background: var(--ifm-color-primary-darker);
+  --chat--toggle--color: #ffffff;
+  --chat--toggle--size: 64px;
+  --chat--toggle--shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* === DARK MODE OVERRIDES === */
+[data-theme='dark'] {
+  /* Surface colors - using dark theme surfaces */
+  --chat--color-white: var(--ifm-background-color);
+  --chat--color-light: var(--ifm-background-surface-color);
+  --chat--color-secondary: var(--ifm-background-surface-color);
+  --chat--color-light-shade-50: var(--ifm-color-emphasis-200);
+  --chat--color-secondary-shade-50: var(--ifm-color-emphasis-300);
+
+  /* Text colors - better contrast in dark mode */
+  --chat--color-dark: var(--ifm-font-color-base);
+  --chat--color-medium: var(--ifm-font-color-secondary);
+  --chat--color-disabled: var(--ifm-color-emphasis-600);
+  --chat--color-typing: var(--ifm-font-color-secondary);
+
+  /* Header border in dark mode */
+  --chat--header--border-bottom: 1px solid var(--ifm-color-emphasis-300);
+
+  /* Bot messages in dark mode */
+  --chat--message--bot--background: var(--ifm-color-emphasis-100);
+  --chat--message--bot--border: 1px solid var(--ifm-color-emphasis-300);
+
+  /* Code blocks in dark mode */
+  --chat--message--pre--background: var(--ifm-color-emphasis-200);
+
+  /* Toggle button with glow effect in dark mode */
+  --chat--toggle--shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.4);
+
+  /* Input field styles for dark mode */
+  --chat--input--background: var(--ifm-color-emphasis-100);
+  --chat--input--text-color: var(--ifm-font-color-base);
+
+  /* Send button in dark mode */
+  --chat--input--send--button--background: var(--ifm-color-emphasis-200);
+  --chat--input--send--button--color: var(--ifm-color-primary);
+  --chat--input--send--button--background-hover: var(--ifm-color-primary);
+  --chat--input--send--button--color-hover: #ffffff;
+}
+
+/* === ADDITIONAL INPUT & BUTTON OVERRIDES === */
+
+/* Remove border/line above input area */
+.chat-footer {
+  border-top: none !important;
+}
+
+.chat-input {
+  border-top: none !important;
+  padding-top: 0.5rem !important;
+}
+
+/* Input textarea specific styles */
+.chat-inputs textarea {
+  background: var(--chat--input--background, var(--ifm-background-surface-color)) !important;
+  color: var(--chat--input--text-color, var(--ifm-font-color-base)) !important;
+  border: none !important;
+  overflow-y: hidden !important;
+  /* Hide scrollbar */
+  border-radius: 0.75rem !important;
+  /* Add rounded corners */
+  margin-left: 0.5rem !important;
+  /* Add margin on left */
+  margin-bottom: 0.5rem !important;
+  /* Add margin on bottom */
+}
+
+.chat-inputs textarea::placeholder {
+  color: var(--ifm-color-emphasis-600) !important;
+  opacity: 1;
+}
+
+.chat-inputs textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Send button styles - Light mode */
+.chat-input-send-button {
+  background: transparent !important;
+  color: var(--ifm-color-primary) !important;
+  transition: all 200ms !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.chat-input-send-button:hover:not([disabled]) {
+  background: transparent !important;
+  color: var(--ifm-color-primary-dark) !important;
+}
+
+.chat-input-send-button[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Dark mode specific overrides */
+[data-theme='dark'] .chat-inputs textarea {
+  background: var(--ifm-color-emphasis-100) !important;
+  color: var(--ifm-font-color-base) !important;
+}
+
+[data-theme='dark'] .chat-inputs textarea::placeholder {
+  color: var(--ifm-color-emphasis-600) !important;
+}
+
+[data-theme='dark'] .chat-input-send-button {
+  background: transparent !important;
+  color: var(--ifm-color-primary) !important;
+}
+
+[data-theme='dark'] .chat-input-send-button:hover:not([disabled]) {
+  background: transparent !important;
+  color: var(--ifm-color-primary-light) !important;
+}

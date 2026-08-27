@@ -1,0 +1,15 @@
+[install]
+# Use exact versions for dependencies
+exact = true
+
+[test]
+# Use Bun's built-in test runner
+coverage = true
+
+[debug]
+# Enable source maps for better debugging
+sourcemap = true
+
+[format]
+# Use Prettier for formatting
+formatter = "prettier" 

@@ -1,0 +1,33 @@
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+.DS_Store
+*.pem
+*.local
+
+# Flutter / Android / iOS
+.dart_tool/
+.fvm/
+.idea/
+.vscode/
+*.flutter-plugins
+*.flutter-plugin-dependencies
+*.packages
+.pub/
+.pub-cache/
+android/.gradle
+ios/Pods/
+
+# Zip Archives (Optional large zips)
+# Elite Quiz - Admin Panel - v2.3.8.zip
+# Elite Quiz Web v-2.3.8.zip
+# elite_quiz_doc-2.3.8.zip
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

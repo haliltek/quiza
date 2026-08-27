@@ -1,0 +1,206 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  background:
+    var(--gradient-mesh-1), var(--gradient-mesh-2), var(--gradient-mesh-3), var(--gradient-mesh-4),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.98) 100%);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+[data-theme='dark'] .heroBanner {
+  background:
+    var(--gradient-mesh-1), var(--gradient-mesh-2), var(--gradient-mesh-3), var(--gradient-mesh-4),
+    linear-gradient(135deg, rgba(18, 18, 18, 0.95) 0%, rgba(26, 26, 26, 0.98) 100%);
+}
+
+@media screen and (max-width: 966px) {
+  .heroBanner {
+    padding: 2rem;
+    min-height: 50vh;
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  animation: fadeInUp 0.6s ease-out;
+  animation-delay: 0.3s;
+  animation-fill-mode: backwards;
+}
+
+.buttons .button {
+  font-size: 1.125rem;
+  padding: 0.875rem 2.5rem;
+  transition: all var(--transition-base);
+  background: white;
+  border: 2px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary) !important;
+  font-weight: 700;
+}
+
+.buttons .button:hover {
+  transform: translateY(-2px);
+  background: var(--ifm-color-primary);
+  color: white !important;
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme='dark'] .buttons .button {
+  background: transparent;
+  color: var(--ifm-color-primary) !important;
+  border: 2px solid var(--ifm-color-primary);
+}
+
+[data-theme='dark'] .buttons .button:hover {
+  background: var(--ifm-color-primary);
+  color: white !important;
+  border-color: var(--ifm-color-primary);
+}
+
+/* Quick Links Section */
+.quickLinksSection {
+  padding: 5rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 40vh; /* Set minimum height for better spacing */
+  position: relative;
+  z-index: 2;
+}
+
+.quickLinksHeading {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.quickLinksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.quickLinkCard {
+  background: var(--surface-primary);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  padding: 2rem;
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none !important;
+  color: var(--ifm-font-color-base);
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.quickLinkCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--ifm-color-primary-light);
+  border-width: 2px;
+}
+
+.quickLinkCard h3 {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 3;
+}
+
+.quickLinkCard p {
+  margin-bottom: 0;
+  opacity: 0.85;
+  color: var(--ifm-font-color-base);
+  position: relative;
+  z-index: 3;
+  line-height: var(--line-height-relaxed);
+  font-size: 1rem;
+}
+
+/* Dark mode specific adjustments */
+[data-theme='dark'] .quickLinkCard {
+  background: var(--surface-secondary);
+  border-color: var(--ifm-color-emphasis-300);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme='dark'] .quickLinkCard:hover {
+  background: var(--surface-secondary);
+  box-shadow: var(--shadow-md);
+  border-color: var(--ifm-color-primary-light);
+}
+
+@media screen and (max-width: 768px) {
+  .quickLinksGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.homepage-wrapper {
+  position: relative;
+  z-index: 99999;
+}
+
+.hero__title {
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.hero__subtitle {
+  color: var(--ifm-font-color-base);
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 500;
+  opacity: 0.85;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease-out;
+  animation-delay: 0.15s;
+  animation-fill-mode: backwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

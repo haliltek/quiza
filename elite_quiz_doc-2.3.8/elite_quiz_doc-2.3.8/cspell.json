@@ -1,0 +1,42 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "clsx",
+    "docusaurus",
+    "Elite",
+    "Gondaliya",
+    "mdx",
+    "prism",
+    "Quiz",
+    "Sodha",
+    "svgr",
+    "WRTeam"
+  ],
+  "ignorePaths": [
+    "node_modules/**",
+    "build/**",
+    "dist/**",
+    ".cache/**",
+    "*.min.js",
+    "*.generated.*",
+    "package-lock.json",
+    "yarn.lock"
+  ],
+  "ignoreRegExpList": [
+    "/[A-Z]{2,}/g",
+    "/[a-z]+[A-Z][a-z]+/g"
+  ],
+  "allowCompoundWords": true,
+  "dictionaries": [
+    "en-gb",
+    "en-us",
+    "companies",
+    "softwareTerms",
+    "typescript",
+    "node",
+    "html",
+    "css",
+    "markdown"
+  ]
+}

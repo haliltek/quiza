@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  elitequiz_db:
+    image: mysql:8.0
+    container_name: elitequiz_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: elite_quiz_root_pass_2026
+      MYSQL_DATABASE: elite_quiz_db
+      MYSQL_USER: elite_user
+      MYSQL_PASSWORD: elite_user_pass_2026
+    volumes:
+      - elitequiz_db_data:/var/lib/mysql
+    networks:
+      - elitequiz_net
+
+  elitequiz_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: elitequiz_api
+    restart: always
+    volumes:
+      - ./backend:/var/www/html
+    networks:
+      - elitequiz_net
+
+  elitequiz_webserver:
+    image: nginx:alpine
+    container_name: elitequiz_webserver
+    restart: always
+    ports:
+      - "8088:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./ssl.crt:/etc/nginx/ssl.crt
+      - ./ssl.key:/etc/nginx/ssl.key
+    depends_on:
+      - elitequiz_api
+      - elitequiz_db
+    networks:
+      - elitequiz_net
+
+networks:
+  elitequiz_net:
+    driver: bridge
+
+volumes:
+  elitequiz_db_data:

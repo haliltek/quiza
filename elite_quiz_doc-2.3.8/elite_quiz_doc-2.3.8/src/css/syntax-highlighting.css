@@ -1,0 +1,81 @@
+/**
+ * Enhanced syntax highlighting for code blocks
+ * Especially designed for .env files and configuration files
+ */
+
+/* Custom syntax highlighting for env files */
+.token.comment {
+  color: #6a737d;
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: #5c6370;
+}
+
+.token.variable {
+  color: #e06c75;
+}
+
+.token.string {
+  color: #98c379;
+}
+
+.token.function {
+  color: #61afef;
+}
+
+.token.keyword {
+  color: #c678dd;
+}
+
+.token.property {
+  color: #e5c07b;
+}
+
+.token.operator {
+  color: #56b6c2;
+}
+
+/* Enhance contrast in dark mode */
+html[data-theme='dark'] .token.comment {
+  color: #7f848e;
+}
+
+html[data-theme='dark'] .token.punctuation {
+  color: #7d8799;
+}
+
+html[data-theme='dark'] .token.variable {
+  color: #ef596f;
+}
+
+html[data-theme='dark'] .token.string {
+  color: #89ca65;
+}
+
+/* Environment variable specific styling */
+.language-env .token.key {
+  color: var(--ifm-color-primary);
+  font-weight: bold;
+}
+
+.language-env .token.value {
+  color: #28a745;
+}
+
+/* File name annotation for code blocks */
+.code-block-file-name {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  margin-bottom: -0.5rem;
+  display: inline-block;
+}
+
+/* Add an icon to .env files */
+.code-block-file-name[data-file-name$='.env']::before {
+  content: '🔐 ';
+}

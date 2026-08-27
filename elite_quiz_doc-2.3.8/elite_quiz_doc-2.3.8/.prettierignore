@@ -1,0 +1,23 @@
+# Build output
+build/
+dist/
+.cache/
+
+# Dependencies
+node_modules/
+
+# Generated files
+*.generated.*
+*.min.js
+
+# Logs
+*.log
+
+# Coverage directory
+coverage/
+
+# Misc
+.DS_Store
+.env
+.env.*
+!.env.example
