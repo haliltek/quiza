@@ -1,33 +1,51 @@
-# Node.js / Next.js
-node_modules/
-.next/
-out/
-build/
-dist/
+# Operating System & Editor Files
 .DS_Store
-*.pem
-*.local
-
-# Flutter / Android / iOS
-.dart_tool/
-.fvm/
+__MACOSX/
+Thumbs.db
 .idea/
+*.iml
+*.ipr
+*.iws
 .vscode/
-*.flutter-plugins
-*.flutter-plugin-dependencies
-*.packages
-.pub/
-.pub-cache/
-android/.gradle
-ios/Pods/
 
-# Zip Archives (Optional large zips)
-# Elite Quiz - Admin Panel - v2.3.8.zip
-# Elite Quiz Web v-2.3.8.zip
-# elite_quiz_doc-2.3.8.zip
+# Secrets, Service Accounts & Private Keys (Push Protection)
+*firebase-adminsdk*.json
+serviceAccountKey.json
+keys.json
+*.key
+*.pem
+*.keystore
+*.jks
+.env
+.env.*
+*.env
+*.env.*
+**/ephemeral/
 
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Large Archives & Vendor Zip Bundles
+*.zip
+elitequiz-2391/
+*.apk
+*.aab
+*.dill
+
+# Flutter & Dart Build Artifacts
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.pub-cache/
+**/.pub/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/build/
+**/android/.gradle/
+**/android/.kotlin/
+**/android/app/.cxx/
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+
+# Temporary / Scratch Cache
+scratch/
