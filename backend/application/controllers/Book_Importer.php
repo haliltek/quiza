@@ -42,7 +42,7 @@ class Book_Importer extends CI_Controller
 
         $url = trim($this->input->post('url') ?? '');
         $badge = trim($this->input->post('badge') ?? '');
-        $category_id = intval($this->input->post('category_id') ?? 11);
+        $category_id = intval($this->input->post('category_id') ?? 0);
         $subcategory_id = intval($this->input->post('subcategory_id') ?? 0);
         $exam_id = intval($this->input->post('exam_id') ?? 0);
         $html_source = trim($this->input->post('html_source') ?? '');
@@ -107,11 +107,14 @@ class Book_Importer extends CI_Controller
 
         // Handle direct PDF URL or Upload
         $filePath = '';
+        $docTitle = 'PDF Dokümanı';
         if (!empty($_FILES['pdf_file']['name'])) {
+            $docTitle = $_FILES['pdf_file']['name'];
             $tmpPath = $_FILES['pdf_file']['tmp_name'];
             $filePath = sys_get_temp_dir() . '/upload_' . time() . '.pdf';
             move_uploaded_file($tmpPath, $filePath);
         } else if (!empty($url)) {
+            $docTitle = basename(parse_url($url, PHP_URL_PATH) ?? 'indirilen_belge.pdf');
             $filePath = sys_get_temp_dir() . '/download_' . time() . '.pdf';
             $ch = curl_init($url);
             $fp = fopen($filePath, 'wb');
@@ -134,6 +137,16 @@ class Book_Importer extends CI_Controller
 
         if ($result['error']) {
             echo json_encode($result);
+            return;
+        }
+
+        $result['title'] = $docTitle;
+
+        if (empty($result['questions'])) {
+            echo json_encode([
+                'error' => true,
+                'message' => 'PDF dosyasında soru veya şık formatı tespit edilemedi. Dosya taranmış fotokopi/görsel olabilir.'
+            ]);
             return;
         }
 
@@ -188,9 +201,12 @@ class Book_Importer extends CI_Controller
                 $note = $q['note'];
             }
 
+            $finalCat = ($category_id > 0) ? $category_id : (!empty($q['category']) ? intval($q['category']) : 1);
+            $finalSub = ($subcategory_id > 0) ? $subcategory_id : (!empty($q['subcategory']) ? intval($q['subcategory']) : 0);
+
             $insertData = [
-                'category' => $category_id > 0 ? $category_id : ($q['category'] ?? 11),
-                'subcategory' => $subcategory_id > 0 ? $subcategory_id : ($q['subcategory'] ?? 0),
+                'category' => $finalCat,
+                'subcategory' => $finalSub,
                 'language_id' => 52, // Turkish
                 'image' => '',
                 'question' => $qText,
@@ -568,27 +584,324 @@ class Book_Importer extends CI_Controller
 
     private function parse_generic_pdf($filePath, $badge)
     {
-        // Extract text via pdftotext
+        // Extract text via pdftotext with layout preserving geometry
         $cmd = "pdftotext -layout " . escapeshellarg($filePath) . " -";
         $text = shell_exec($cmd);
 
-        if (empty($text)) {
-            return ['error' => true, 'message' => 'PDF içeriği metne dönüştürülemedi. Dosya taranmış görsel olabilir.'];
+        // Check if digital text exists
+        $cleanLetters = preg_replace('/[^a-zA-Z0-9\x{00C0}-\x{017F}]+/u', '', $text ?? '');
+        if (mb_strlen($cleanLetters) < 50) {
+            return [
+                'error' => true,
+                'is_scanned' => true,
+                'message' => 'Yüklediğiniz PDF dosyası taranmış görsel/fotokopi (resim) formatındadır. Dosya içerisinde seçilebilir dijital metin katmanı bulunmadığı için sorular doğrudan okunamamıştır. Lütfen metinleri kopyalanabilen dijital bir PDF veya Scribd kitap linki kullanınız.'
+            ];
         }
 
-        // Basic generic question extractor
+        // Split into pages by form-feed character
+        $pages = array_values(array_filter(explode("\x0c", $text), function($p) {
+            return !empty(trim($p));
+        }));
+        $totalPages = count($pages);
+
+        // Check if this is an official ÖSYM KPSS or GY-GK booklet
+        $isOsymKpss = (
+            (stripos($text, 'GENEL YETENEK') !== false || stripos($text, 'GY-PS') !== false) &&
+            (stripos($text, 'GENEL KÜLTÜR') !== false || stripos($text, 'GK-PS') !== false)
+        );
+
+        // Extract year if available (e.g. 2019, 2020, 2024)
+        $year = '';
+        if (preg_match('/(20\d{2})[-\s]*(?:KPSS|Kamu)/iu', $text, $ym)) {
+            $year = $ym[1];
+        }
+
+        if ($isOsymKpss) {
+            // --- 1. FIND ANSWER KEY PAGE (usually the last page or near the end) ---
+            $ansKeys = ['GY' => [], 'GK' => []];
+            $ansPageIdx = -1;
+
+            for ($p = $totalPages - 1; $p >= max(0, $totalPages - 3); $p--) {
+                $pContent = $pages[$p];
+                if (stripos($pContent, 'GENEL YETENEK') !== false && stripos($pContent, 'GENEL KÜLTÜR') !== false) {
+                    $lines = explode("\n", $pContent);
+                    $foundCount = 0;
+                    foreach ($lines as $l) {
+                        if (preg_match_all('/(\d{1,2})\.\s+([A-E])\b/u', $l, $matches, PREG_OFFSET_CAPTURE)) {
+                            foreach ($matches[1] as $idx => $m) {
+                                $qnum = intval($m[0]);
+                                $ansLetter = strtolower($matches[2][$idx][0]);
+                                $offset = $m[1];
+                                if ($offset < 50) {
+                                    $ansKeys['GY'][$qnum] = $ansLetter;
+                                } else {
+                                    $ansKeys['GK'][$qnum] = $ansLetter;
+                                }
+                                $foundCount++;
+                            }
+                        }
+                    }
+                    if ($foundCount > 20) {
+                        $ansPageIdx = $p;
+                        break;
+                    }
+                }
+            }
+
+            // --- 2. EXTRACT QUESTIONS SECTION BY SECTION ---
+            $gy_questions = [];
+            $gk_questions = [];
+
+            for ($pno = 0; $pno < $totalPages; $pno++) {
+                // Skip the answer sheet page during question parsing
+                if ($pno === $ansPageIdx) continue;
+
+                $pText = $pages[$pno];
+                if (empty(trim($pText))) continue;
+
+                // Determine active test section: GY vs GK
+                $header = substr($pText, 0, 150);
+                if (strpos($header, '/GK') !== false || strpos($header, 'GK-PS') !== false) {
+                    $currentTest = 'GK';
+                } elseif (strpos($header, '/GY') !== false || strpos($header, 'GY-PS') !== false) {
+                    $currentTest = 'GY';
+                } elseif ($pno >= 20) {
+                    $currentTest = 'GK';
+                } else {
+                    $currentTest = 'GY';
+                }
+
+                $pLines = explode("\n", $pText);
+                $leftCol = [];
+                $rightCol = [];
+
+                foreach ($pLines as $line) {
+                    // Check for wide whitespace gap separating columns
+                    if (preg_match('/\s{15,}/', substr($line, 15, 60), $wgm, PREG_OFFSET_CAPTURE)) {
+                        $splitPos = 15 + $wgm[0][1] + intval(strlen($wgm[0][0]) / 2);
+                        $leftCol[] = rtrim(substr($line, 0, $splitPos));
+                        $rightCol[] = rtrim(substr($line, $splitPos));
+                        continue;
+                    }
+
+                    $hasLeft = (trim(substr($line, 0, 65)) !== '');
+                    $hasRight = (strlen($line) > 65 && trim(substr($line, 65)) !== '');
+
+                    if ($hasLeft && $hasRight) {
+                        $sub = substr($line, 50, 35);
+                        if (preg_match('/\s{3,}/', $sub, $gm, PREG_OFFSET_CAPTURE)) {
+                            $splitPos = 50 + $gm[0][1] + intval(strlen($gm[0][0]) / 2);
+                        } else {
+                            $splitPos = 68;
+                        }
+                        $leftCol[] = rtrim(substr($line, 0, $splitPos));
+                        $rightCol[] = rtrim(substr($line, $splitPos));
+                    } elseif ($hasLeft) {
+                        $leftCol[] = rtrim(substr($line, 0, 65));
+                        $rightCol[] = '';
+                    } elseif ($hasRight) {
+                        $leftCol[] = '';
+                        $rightCol[] = rtrim(substr($line, 65));
+                    } else {
+                        $leftCol[] = '';
+                        $rightCol[] = '';
+                    }
+                }
+
+                $stream = array_merge($leftCol, $rightCol);
+                $curQ = null;
+
+                foreach ($stream as $l) {
+                    $trim = trim($l);
+                    if (empty($trim)) continue;
+
+                    // Skip headers and exam footers
+                    $skip = false;
+                    foreach (['KPSS', 'GENEL YETENEK TESTİ', 'GENEL KÜLTÜR TESTİ', 'Diğer sayfaya', 'TEST BİTTİ', 'Bu testte', 'Cevaplarınızı', 'ÖSYM'] as $kw) {
+                        if (strpos($trim, $kw) !== false && strlen($trim) < 70) {
+                            $skip = true;
+                            break;
+                        }
+                    }
+                    if ($skip) continue;
+
+                    // Question start: e.g. "1.", "2. ", "57."
+                    if (preg_match('/^(\d{1,2})\.(?:\s+(.*))?$/u', $trim, $qm)) {
+                        $qnum = intval($qm[1]);
+                        if ($qnum >= 1 && $qnum <= 60) {
+                            if ($curQ) {
+                                if ($curQ['test'] === 'GY') {
+                                    $gy_questions[$curQ['qnum']] = $curQ;
+                                } else {
+                                    $gk_questions[$curQ['qnum']] = $curQ;
+                                }
+                            }
+
+                            $ans = $ansKeys[$currentTest][$qnum] ?? 'a';
+                            $qtext = $qm[2] ?? '';
+
+                            // Subject & Category Mapping for KPSS:
+                            // GY: 1-30 Türkçe (cat 4, sub 18), 31-60 Matematik (cat 5, sub 0)
+                            // GK: 1-27 Tarih (cat 1, sub 1), 28-45 Coğrafya (cat 2, sub 8), 46-54 Vatandaşlık (cat 3, sub 13), 55-60 Güncel (cat 3, sub 17)
+                            $cat = 0;
+                            $sub = 0;
+                            $subjectName = '';
+                            if ($currentTest === 'GY') {
+                                if ($qnum <= 30) {
+                                    $cat = 4;
+                                    $sub = 18;
+                                    $subjectName = 'Türkçe';
+                                } else {
+                                    $cat = 5;
+                                    $sub = 0;
+                                    $subjectName = 'Matematik';
+                                }
+                            } else {
+                                if ($qnum <= 27) {
+                                    $cat = 1;
+                                    $sub = 1;
+                                    $subjectName = 'Tarih';
+                                } elseif ($qnum <= 45) {
+                                    $cat = 2;
+                                    $sub = 8;
+                                    $subjectName = 'Coğrafya';
+                                } elseif ($qnum <= 54) {
+                                    $cat = 3;
+                                    $sub = 13;
+                                    $subjectName = 'Vatandaşlık';
+                                } else {
+                                    $cat = 3;
+                                    $sub = 17;
+                                    $subjectName = 'Güncel Bilgiler';
+                                }
+                            }
+
+                            $secName = ($currentTest === 'GY') ? 'Genel Yetenek' : 'Genel Kültür';
+                            $yearStr = !empty($year) ? "$year " : "";
+                            $solutionText = "ÖSYM {$yearStr}KPSS {$secName} ({$subjectName}) {$qnum}. Soru. Resmi Doğru Cevap: " . strtoupper($ans);
+
+                            $curQ = [
+                                'qnum' => $qnum,
+                                'test' => $currentTest,
+                                'category' => $cat,
+                                'subcategory' => $sub,
+                                'subject' => $subjectName,
+                                'question' => $qtext,
+                                'optiona' => '',
+                                'optionb' => '',
+                                'optionc' => '',
+                                'optiond' => '',
+                                'optione' => '',
+                                'answer' => $ans,
+                                'solution' => $solutionText
+                            ];
+                            continue;
+                        }
+                    }
+
+                    if (!$curQ) continue;
+
+                    // Match options: A) ... B) ... etc.
+                    if (preg_match_all('/([A-E])\)\s*/u', $trim, $optMatches, PREG_OFFSET_CAPTURE)) {
+                        $count = count($optMatches[0]);
+                        for ($i = 0; $i < $count; $i++) {
+                            $letter = strtolower($optMatches[1][$i][0]);
+                            $start = $optMatches[0][$i][1] + strlen($optMatches[0][$i][0]);
+                            $end = ($i + 1 < $count) ? $optMatches[0][$i + 1][1] : strlen($trim);
+                            $optVal = trim(substr($trim, $start, $end - $start));
+                            $curQ['option' . $letter] = $optVal;
+                        }
+                        continue;
+                    }
+
+                    // Append line text to current question or option
+                    if (empty($curQ['optiona'])) {
+                        $curQ['question'] = trim($curQ['question'] . ' ' . $trim);
+                    } elseif (!empty($curQ['optione'])) {
+                        $curQ['optione'] .= ' ' . $trim;
+                    } elseif (!empty($curQ['optiond'])) {
+                        $curQ['optiond'] .= ' ' . $trim;
+                    } elseif (!empty($curQ['optionc'])) {
+                        $curQ['optionc'] .= ' ' . $trim;
+                    } elseif (!empty($curQ['optionb'])) {
+                        $curQ['optionb'] .= ' ' . $trim;
+                    } elseif (!empty($curQ['optiona'])) {
+                        $curQ['optiona'] .= ' ' . $trim;
+                    }
+                }
+
+                if ($curQ) {
+                    if ($curQ['test'] === 'GY') {
+                        $gy_questions[$curQ['qnum']] = $curQ;
+                    } else {
+                        $gk_questions[$curQ['qnum']] = $curQ;
+                    }
+                }
+            }
+
+            // Merge questions: GY 1-60, then GK 1-60
+            ksort($gy_questions);
+            ksort($gk_questions);
+            $allQuestions = [];
+            foreach ($gy_questions as $q) {
+                foreach (['a', 'b', 'c', 'd', 'e'] as $optL) {
+                    if (empty(trim($q['option' . $optL]))) {
+                        $q['option' . $optL] = '[Matematiksel Şık ' . strtoupper($optL) . ']';
+                    }
+                }
+                $allQuestions[] = $q;
+            }
+            foreach ($gk_questions as $q) {
+                foreach (['a', 'b', 'c', 'd', 'e'] as $optL) {
+                    if (empty(trim($q['option' . $optL]))) {
+                        $q['option' . $optL] = '[Şık ' . strtoupper($optL) . ']';
+                    }
+                }
+                $allQuestions[] = $q;
+            }
+
+            return [
+                'error' => false,
+                'title' => basename($filePath),
+                'year' => $year,
+                'is_osym' => true,
+                'questions' => $allQuestions
+            ];
+        }
+
+        // --- 3. GENERIC PDF PARSER (Single-column or standard question bank) ---
+        $answerMap = [];
+        $lastPagesText = '';
+        for ($p = max(0, $totalPages - 3); $p < $totalPages; $p++) {
+            $lastPagesText .= "\n" . ($pages[$p] ?? '');
+        }
+
+        if (preg_match_all('/(?:^|\s)(\d{1,3})\s*[\.\-:\)]\s*([A-Ea-e])\b/u', $lastPagesText, $ansMatches)) {
+            foreach ($ansMatches[1] as $idx => $qnum) {
+                $qnumInt = intval($qnum);
+                $ansVal = strtolower($ansMatches[2][$idx]);
+                $answerMap[$qnumInt] = $ansVal;
+            }
+        }
+
         $lines = explode("\n", $text);
         $questions = [];
         $currentQ = null;
 
         foreach ($lines as $line) {
             $trim = trim($line);
-            if (preg_match('/^(\d{1,3})\.\s+(.*)/', $trim, $qm)) {
-                if ($currentQ && !empty($currentQ['optiona']) && !empty($currentQ['answer'])) {
+            if (empty($trim)) continue;
+
+            if (preg_match('/^(?:Sayfa\s+\d+|\d+\s*\/\s*\d+|\b\d+\s*$)/iu', $trim)) continue;
+
+            if (preg_match('/^(?:Soru\s+)?(\d{1,3})\s*[\.\-:]\s+(.*)/iu', $trim, $qm)) {
+                if ($currentQ && !empty($currentQ['optiona']) && (!empty($currentQ['optionb']) || !empty($currentQ['optionc']))) {
                     $questions[] = $currentQ;
                 }
+                $qnum = intval($qm[1]);
+                $ans = $answerMap[$qnum] ?? '';
                 $currentQ = [
-                    'qnum' => intval($qm[1]),
+                    'qnum' => $qnum,
                     'question' => $qm[2],
                     'optiona' => '',
                     'optionb' => '',
@@ -596,53 +909,94 @@ class Book_Importer extends CI_Controller
                     'optiond' => '',
                     'optione' => '',
                     'solution' => '',
-                    'answer' => ''
+                    'answer' => $ans
                 ];
                 continue;
             }
 
             if (!$currentQ) continue;
 
-            if (preg_match('/^A\)\s*(.*)/i', $trim, $om)) {
+            if (preg_match('/^A[\)\.]\s*(.*)/iu', $trim, $om)) {
                 $currentQ['optiona'] = $om[1];
                 continue;
             }
-            if (preg_match('/^B\)\s*(.*)/i', $trim, $om)) {
+            if (preg_match('/^B[\)\.]\s*(.*)/iu', $trim, $om)) {
                 $currentQ['optionb'] = $om[1];
                 continue;
             }
-            if (preg_match('/^C\)\s*(.*)/i', $trim, $om)) {
+            if (preg_match('/^C[\)\.]\s*(.*)/iu', $trim, $om)) {
                 $currentQ['optionc'] = $om[1];
                 continue;
             }
-            if (preg_match('/^D\)\s*(.*)/i', $trim, $om)) {
+            if (preg_match('/^D[\)\.]\s*(.*)/iu', $trim, $om)) {
                 $currentQ['optiond'] = $om[1];
                 continue;
             }
-            if (preg_match('/^E\)\s*(.*)/i', $trim, $om)) {
+            if (preg_match('/^E[\)\.]\s*(.*)/iu', $trim, $om)) {
                 $currentQ['optione'] = $om[1];
                 continue;
             }
-            if (preg_match('/(?:DOĞRU\s+)?CEVAP\s*:\s*([A-E])/i', $trim, $am)) {
+
+            if (preg_match('/(?:DOĞRU\s+)?CEVAP\s*[:\-]\s*([A-E])/iu', $trim, $am)) {
                 $currentQ['answer'] = strtolower($am[1]);
+                continue;
+            }
+
+            if (preg_match('/^(?:ÇÖZÜM|AÇIKLAMA)\s*[:\-]?\s*(.*)/iu', $trim, $sm)) {
+                $currentQ['solution'] = (empty($currentQ['solution']) ? '' : ' ') . $sm[1];
                 continue;
             }
 
             if (empty($currentQ['optiona'])) {
                 $currentQ['question'] .= ' ' . $trim;
             } else if (!empty($currentQ['optione'])) {
-                $currentQ['solution'] .= ' ' . $trim;
+                if (empty($currentQ['solution'])) {
+                    $currentQ['optione'] .= ' ' . $trim;
+                } else {
+                    $currentQ['solution'] .= ' ' . $trim;
+                }
+            } else if (!empty($currentQ['optiond'])) {
+                $currentQ['optiond'] .= ' ' . $trim;
+            } else if (!empty($currentQ['optionc'])) {
+                $currentQ['optionc'] .= ' ' . $trim;
+            } else if (!empty($currentQ['optionb'])) {
+                $currentQ['optionb'] .= ' ' . $trim;
+            } else if (!empty($currentQ['optiona'])) {
+                $currentQ['optiona'] .= ' ' . $trim;
             }
         }
 
-        if ($currentQ && !empty($currentQ['optiona']) && !empty($currentQ['answer'])) {
+        if ($currentQ && !empty($currentQ['optiona']) && (!empty($currentQ['optionb']) || !empty($currentQ['optionc']))) {
             $questions[] = $currentQ;
+        }
+
+        $finalQuestions = [];
+        foreach ($questions as $q) {
+            if (empty($q['answer'])) {
+                $q['answer'] = 'a';
+                if (empty($q['solution'])) {
+                    $q['solution'] = '[Cevap anahtarı metinde yer almadığı için varsayılan A atanmıştır, lütfen panelden kontrol ediniz.]';
+                }
+            } else if (empty($q['solution'])) {
+                $q['solution'] = "Doğru Cevap: " . strtoupper($q['answer']);
+            }
+            if (empty($q['optione'])) {
+                $q['optione'] = '-';
+            }
+            $finalQuestions[] = $q;
+        }
+
+        if (empty($finalQuestions)) {
+            return [
+                'error' => true,
+                'message' => 'PDF dosyasında standart soru yapısı tespit edilemedi. Dosya taranmış görsel olabilir veya metin düzeni farklı olabilir.'
+            ];
         }
 
         return [
             'error' => false,
             'title' => basename($filePath),
-            'questions' => $questions
+            'questions' => $finalQuestions
         ];
     }
 }

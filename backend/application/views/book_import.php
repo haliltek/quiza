@@ -137,8 +137,9 @@
                                                 <div class="form-group col-md-4">
                                                     <label class="font-weight-bold">Hedef Kategori:</label>
                                                     <select name="category_id" id="category_id" class="form-control select2">
+                                                        <option value="0" selected>⚡ Otomatik Branş Dağıtımı (Türkçe, Matematik, Tarih, Coğrafya, Vatandaşlık, Güncel)</option>
                                                         <?php foreach ($categories as $cat) { ?>
-                                                            <option value="<?= $cat->id; ?>" <?= ($cat->id == 11) ? 'selected' : ''; ?>>
+                                                            <option value="<?= $cat->id; ?>">
                                                                 <?= $cat->id . ' - ' . $cat->category_name; ?>
                                                             </option>
                                                         <?php } ?>
@@ -286,6 +287,24 @@
                             return;
                         }
 
+                        if (res.is_scanned) {
+                            Swal.fire({
+                                icon: "info",
+                                title: "Taranmış Görsel (Fotokopi) PDF",
+                                html: '<div class="text-left" style="font-size:0.95rem; line-height:1.6;">' +
+                                      '<p>Yüklediğiniz dosya matbaa veya fotokopi taraması (resim) olduğu için dosya içerisinde <strong>seçilebilir dijital metin katmanı bulunmamaktadır</strong>.</p>' +
+                                      '<p class="font-weight-bold mb-1">Soruların eksiksiz ve hatasız aktarılabilmesi için:</p>' +
+                                      '<ul class="pl-3">' +
+                                      '<li>Metinleri fare ile seçilip kopyalanabilen <strong>orijinal dijital PDF soru bankalarını</strong> yükleyebilir,</li>' +
+                                      '<li>Veya dokümanın <strong>Scribd linkini</strong> kullanarak tüm soruları ve detaylı çözümleri otomatik olarak çekebilirsiniz.</li>' +
+                                      '</ul>' +
+                                      '</div>',
+                                confirmButtonText: "Anladım",
+                                confirmButtonColor: "#6777ef"
+                            });
+                            return;
+                        }
+
                         if (res.error) {
                             Swal.fire({
                                 icon: "error",
@@ -302,7 +321,15 @@
                         $.each(res.preview, function (idx, q) {
                             listHtml += '<div class="card q-card p-3 shadow-sm">';
                             listHtml += '<div class="d-flex justify-content-between align-items-center mb-2">';
-                            listHtml += '<h6 class="text-primary font-weight-bold mb-0">Soru ' + (idx + 1) + '</h6>';
+                            listHtml += '<div>';
+                            listHtml += '<h6 class="text-primary font-weight-bold d-inline mr-2">Soru ' + (idx + 1) + '</h6>';
+                            if (q.subject) {
+                                listHtml += '<span class="badge badge-info mr-1">' + q.subject + '</span>';
+                            }
+                            if (q.test) {
+                                listHtml += '<span class="badge badge-secondary">' + (q.test === 'GY' ? 'Genel Yetenek' : 'Genel Kültür') + '</span>';
+                            }
+                            listHtml += '</div>';
                             listHtml += '<span class="badge badge-success font-weight-bold">Doğru Cevap: ' + q.answer.toUpperCase() + '</span>';
                             listHtml += '</div>';
 
