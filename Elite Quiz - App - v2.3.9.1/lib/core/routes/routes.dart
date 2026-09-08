@@ -46,12 +46,14 @@ import 'package:flutterquiz/ui/screens/refer_and_earn_screen.dart';
 import 'package:flutterquiz/ui/screens/rewards/rewards_screen.dart';
 import 'package:flutterquiz/ui/screens/splash_screen.dart';
 import 'package:flutterquiz/ui/screens/statistics_screen.dart';
+import 'package:flutterquiz/ui/screens/study/study_hub_screen.dart';
 
 final globalNavigator = GlobalKey<NavigatorState>();
 final BuildContext globalCtx = globalNavigator.currentContext!;
 
 class Routes {
   static const home = '/';
+  static const studyHub = '/studyHub';
   static const login = 'login';
   static const splash = 'splash';
   static const signUp = 'signUp';
@@ -206,6 +208,8 @@ class Routes {
         return RandomBattleScreen.route(rs);
       case languageSelect:
         return InitialLanguageSelectionScreen.route();
+      case studyHub:
+        return StudyHubScreen.route();
       default:
         return CupertinoPageRoute(builder: (_) => const Scaffold());
     }

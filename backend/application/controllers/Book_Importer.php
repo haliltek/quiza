@@ -65,10 +65,21 @@ class Book_Importer extends CI_Controller
 
         $url = trim($this->input->post('url') ?? '');
         $badge = trim($this->input->post('badge') ?? '');
-        $category_id = intval($this->input->post('category_id') ?? 0);
+        $raw_category = trim($this->input->post('category_id') ?? '');
         $subcategory_id = intval($this->input->post('subcategory_id') ?? 0);
         $exam_id = intval($this->input->post('exam_id') ?? 0);
         $html_source = trim($this->input->post('html_source') ?? '');
+
+        $exam_target = 'auto_detect';
+        $category_id = 0;
+        if (!empty($raw_category)) {
+            if (strpos($raw_category, 'auto_') === 0 || $raw_category === '0') {
+                $exam_target = ($raw_category === '0') ? 'auto_detect' : $raw_category;
+                $category_id = 0;
+            } else {
+                $category_id = intval($raw_category);
+            }
+        }
 
         // Handle raw HTML source paste
         if (!empty($html_source)) {
@@ -150,7 +161,7 @@ class Book_Importer extends CI_Controller
             return;
         }
 
-        $result = $this->parse_generic_pdf($filePath, $badge);
+        $result = $this->parse_generic_pdf($filePath, $badge, $exam_target);
         @unlink($filePath);
 
         if ($result['error']) {
@@ -166,21 +177,51 @@ class Book_Importer extends CI_Controller
             ]);
         }
 
+        // Check duplicates for preview warning
+        $dupCount = 0;
+        foreach ($result['questions'] as &$qItem) {
+            $rawQ = preg_replace('/^\[.*?\]\s*/', '', trim($qItem['question']));
+            $cleanSnippet = mb_substr(preg_replace('/\s+/', ' ', $rawQ), 0, 80);
+            if (mb_strlen($cleanSnippet) > 15) {
+                $exists = $this->db->select('id')
+                    ->from('tbl_question')
+                    ->like('question', $cleanSnippet)
+                    ->limit(1)
+                    ->get()
+                    ->row();
+                if ($exists) {
+                    $qItem['already_exists'] = true;
+                    $dupCount++;
+                } else {
+                    $qItem['already_exists'] = false;
+                }
+            }
+        }
+
         $this->session->set_userdata('book_import_cache', [
             'questions' => $result['questions'],
             'category_id' => $category_id,
             'subcategory_id' => $subcategory_id,
             'exam_id' => $exam_id,
             'badge' => $badge,
-            'title' => $result['title']
+            'title' => $result['title'],
+            'exam_name' => $result['exam_name'] ?? 'KPSS',
+            'summary' => $result['summary'] ?? ''
         ]);
+
+        $examName = $result['exam_name'] ?? 'KPSS';
+        $summary = !empty($result['summary']) ? " ({$result['summary']})" : "";
+        $previewMsg = "⚡ {$examName} formatı tespit edildi! " . count($result['questions']) . " soru başarıyla analiz edildi$summary.";
+        if ($dupCount > 0) {
+            $previewMsg .= " ⚠️ Dikkat: Bu sorulardan $dupCount tanesi veritabanında zaten mevcut ve aktarımda mükerrer olmaması için otomatik atlanacaktır.";
+        }
 
         return $this->json_response([
             'error' => false,
             'title' => $result['title'],
             'total' => count($result['questions']),
             'preview' => array_slice($result['questions'], 0, 30),
-            'message' => count($result['questions']) . ' soru başarıyla analiz edildi.'
+            'message' => $previewMsg
         ]);
     }
 
@@ -201,7 +242,9 @@ class Book_Importer extends CI_Controller
         $badge = trim($this->input->post('badge') ?? $cached['badge']);
 
         $questions = $cached['questions'];
+        $catLangCache = [];
         $inserted = 0;
+        $skipped = 0;
         $this->db->trans_start();
 
         foreach ($questions as $q) {
@@ -210,18 +253,41 @@ class Book_Importer extends CI_Controller
                 $qText = "[$badge]\n\n" . $qText;
             }
 
+            $finalCat = ($category_id > 0) ? $category_id : (!empty($q['category']) ? intval($q['category']) : 1);
+            $finalSub = ($subcategory_id > 0) ? $subcategory_id : (!empty($q['subcategory']) ? intval($q['subcategory']) : 0);
+
+            // Mükerrer Kontrolü (Duplicate Detection) - Aynı soru metni zaten varsa mükerrer kaydı engelle
+            $rawQ = preg_replace('/^\[.*?\]\s*/', '', trim($q['question']));
+            $cleanSnippet = mb_substr(preg_replace('/\s+/', ' ', $rawQ), 0, 80);
+            if (mb_strlen($cleanSnippet) > 15) {
+                $alreadyExists = $this->db->select('id')
+                    ->from('tbl_question')
+                    ->like('question', $cleanSnippet)
+                    ->limit(1)
+                    ->get()
+                    ->row();
+                if ($alreadyExists) {
+                    $skipped++;
+                    continue; // Soru zaten veritabanında var, atla
+                }
+            }
+
             $note = $q['solution'] ?? '';
             if (empty($note) && !empty($q['note'])) {
                 $note = $q['note'];
             }
 
-            $finalCat = ($category_id > 0) ? $category_id : (!empty($q['category']) ? intval($q['category']) : 1);
-            $finalSub = ($subcategory_id > 0) ? $subcategory_id : (!empty($q['subcategory']) ? intval($q['subcategory']) : 0);
+            // Kategoriye ait language_id değerini otomatik devral
+            if (!isset($catLangCache[$finalCat])) {
+                $catRow = $this->db->select('language_id')->from('tbl_category')->where('id', $finalCat)->get()->row();
+                $catLangCache[$finalCat] = ($catRow && !empty($catRow->language_id)) ? intval($catRow->language_id) : 52;
+            }
+            $targetLangId = $catLangCache[$finalCat];
 
             $insertData = [
                 'category' => $finalCat,
                 'subcategory' => $finalSub,
-                'language_id' => 52, // Turkish
+                'language_id' => $targetLangId,
                 'image' => '',
                 'question' => $qText,
                 'question_type' => 1,
@@ -253,9 +319,22 @@ class Book_Importer extends CI_Controller
         // Clear cache
         $this->session->unset_userdata('book_import_cache');
 
+        if ($inserted == 0 && $skipped > 0) {
+            return $this->json_response([
+                'error' => false,
+                'message' => "⚠️ Bu dosyadaki tüm sorular ($skipped adet) veritabanında zaten kayıtlı olduğu için mükerrer kayıt engellendi ve hiçbir soru eklenmedi.",
+                'redirect' => base_url('manage-questions')
+            ]);
+        }
+
+        $successMsg = "Toplam $inserted adet soru ve detaylı çözümü başarıyla veritabanına eklendi!";
+        if ($skipped > 0) {
+            $successMsg .= " (ℹ️ $skipped adet mükerrer soru sistemde zaten olduğu için atlandı).";
+        }
+
         return $this->json_response([
             'error' => false,
-            'message' => "Toplam $inserted adet soru ve detaylı çözümü başarıyla veritabanına eklendi!",
+            'message' => $successMsg,
             'redirect' => base_url('manage-questions')
         ]);
     }
@@ -596,8 +675,29 @@ class Book_Importer extends CI_Controller
         return $questions;
     }
 
-    private function parse_generic_pdf($filePath, $badge)
+    private function parse_generic_pdf($filePath, $badge, $examTarget = 'auto_detect')
     {
+        // 1. High-precision PyMuPDF KPSS Parser
+        $pythonScript = APPPATH . 'libraries/kpss_pdf_parser.py';
+        if (file_exists($pythonScript)) {
+            $cmd = "python3 " . escapeshellarg($pythonScript) . " " . escapeshellarg($filePath) . " " . escapeshellarg($badge) . " " . escapeshellarg($examTarget) . " 2>&1";
+            $output = shell_exec($cmd);
+            $parsed = json_decode($output, true);
+            if ($parsed && !empty($parsed['questions']) && empty($parsed['error'])) {
+                return [
+                    'error' => false,
+                    'title' => basename($filePath),
+                    'year' => $parsed['year'] ?? '',
+                    'is_osym' => true,
+                    'exam_target' => $parsed['exam_target'] ?? $examTarget,
+                    'exam_name' => $parsed['exam_name'] ?? 'KPSS',
+                    'language_id' => $parsed['language_id'] ?? 52,
+                    'summary' => $parsed['summary'] ?? '',
+                    'questions' => $parsed['questions']
+                ];
+            }
+        }
+
         // Extract text via pdftotext with UTF-8 encoding and layout preserving geometry
         $cmd = "pdftotext -enc UTF-8 -layout " . escapeshellarg($filePath) . " -";
         $text = shell_exec($cmd);

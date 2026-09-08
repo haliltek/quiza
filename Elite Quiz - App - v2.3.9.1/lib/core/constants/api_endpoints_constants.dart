@@ -82,3 +82,7 @@ const getMultiMatchQuestionsUrl = '$_api/get_multi_match_questions';
 const getMultiMatchQuestionsByLevelUrl =
     '$_api/get_multi_match_questions_by_level';
 const multiMatchReportQuestionUrl = '$_api/multi_match_report_question';
+
+// Study Notes & Flashcards Hub
+const getStudyNotesUrl = '$_api/get_study_notes';
+const toggleStudyNoteProgressUrl = '$_api/toggle_study_note_progress';

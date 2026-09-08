@@ -249,4 +249,18 @@ class UiUtils {
       ),
     );
   }
+
+  /// Masks full name into "Firstname S." for privacy (e.g. "Ahmet Yılmaz" -> "Ahmet Y.")
+  static String maskSurname(String? fullName) {
+    if (fullName == null || fullName.trim().isEmpty) return '';
+    final trimmed = fullName.trim();
+    final parts = trimmed.split(RegExp(r'\s+'));
+    if (parts.length <= 1) return parts.first;
+    final lastPart = parts.last;
+    if (lastPart.isEmpty) return trimmed;
+    if (lastPart.endsWith('.') && lastPart.length <= 2) return trimmed;
+    final firstName = parts.sublist(0, parts.length - 1).join(' ');
+    final initial = lastPart.characters.first.toUpperCase();
+    return '$firstName $initial.';
+  }
 }

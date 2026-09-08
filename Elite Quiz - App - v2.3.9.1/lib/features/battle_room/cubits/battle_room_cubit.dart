@@ -348,6 +348,7 @@ final class BattleRoomCubit extends Cubit<BattleRoomState> {
     String? botUid,
     String? questionLanguageId,
   }) async {
+    await _battleRoomStreamSubscription?.cancel();
     emit(const BattleRoomCreating());
     try {
       var roomCode = '';
@@ -440,6 +441,7 @@ final class BattleRoomCubit extends Cubit<BattleRoomState> {
   }
 
   void deleteBattleRoom() {
+    _battleRoomStreamSubscription?.cancel();
     if (state is BattleRoomUserFound) {
       final battleRoom = (state as BattleRoomUserFound).battleRoom;
       _battleRoomRepository.deleteBattleRoom(
@@ -453,6 +455,8 @@ final class BattleRoomCubit extends Cubit<BattleRoomState> {
         battleRoom.roomId,
         isGroupBattle: false,
       );
+      emit(const BattleRoomDeleted());
+    } else {
       emit(const BattleRoomDeleted());
     }
   }

@@ -83,10 +83,8 @@ class _BattleRoomFindOpponentScreenState
   //
   late bool waitForOpponent = true;
 
-  //waiting time to find opponent to join
-  late int waitingTime = context
-      .read<SystemConfigCubit>()
-      .randomBattleOpponentSearchDuration;
+  //waiting time to find opponent to join (fallback to bot in 5s)
+  late int waitingTime = 5;
   Timer? waitForOpponentTimer;
 
   bool playWithBot = false;
@@ -101,6 +99,7 @@ class _BattleRoomFindOpponentScreenState
       searchBattleRoom();
       startScrollImageAnimation();
       letterAnimationController.repeat();
+      setWaitForOpponentTimer();
     });
     WidgetsBinding.instance.addObserver(this);
   }
@@ -187,8 +186,9 @@ class _BattleRoomFindOpponentScreenState
 
   //this will be call only when user has created room successfully
   void setWaitForOpponentTimer() {
+    waitForOpponentTimer?.cancel();
     waitForOpponentTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (waitingTime == 0) {
+      if (waitingTime <= 0) {
         timer.cancel();
         _startAutoBotMatch();
       } else {
@@ -218,9 +218,7 @@ class _BattleRoomFindOpponentScreenState
     scrollController.dispose();
     setState(() {
       scrollController = ScrollController();
-      waitingTime = context
-          .read<SystemConfigCubit>()
-          .randomBattleOpponentSearchDuration;
+      waitingTime = 5;
       waitForOpponent = true;
     });
     letterAnimationController.repeat();
@@ -262,7 +260,7 @@ class _BattleRoomFindOpponentScreenState
           alignment: Alignment.center,
           width: size.width * 0.3,
           child: Text(
-            name,
+            UiUtils.maskSurname(name),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(

@@ -537,9 +537,7 @@ class LeaderBoardScreenState extends State<LeaderBoardScreen>
             ),
             const SizedBox(height: 10),
             Text(
-              circleList[idx]['name']!.toString().isNotEmpty
-                  ? circleList[idx]['name']!.toString()
-                  : '...',
+              UiUtils.maskSurname(circleList[idx]['name']?.toString()),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               textAlign: TextAlign.center,
@@ -686,7 +684,7 @@ class LeaderBoardScreenState extends State<LeaderBoardScreen>
                                   right: 20,
                                 ),
                                 title: Text(
-                                  leaderBoard['name'] as String? ?? '...',
+                                  UiUtils.maskSurname(leaderBoard['name'] as String?),
                                   overflow: TextOverflow.ellipsis,
                                   style: textStyle,
                                 ),
@@ -910,9 +908,7 @@ class _LeaderboardTopThreeDelegate extends SliverPersistentHeaderDelegate {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item['name']!.toString().isNotEmpty
-                      ? item['name']!.toString()
-                      : '...',
+                  UiUtils.maskSurname(item['name']?.toString()),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: TextStyle(
@@ -1046,9 +1042,7 @@ class _LeaderboardTopThreeDelegate extends SliverPersistentHeaderDelegate {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  item['name']!.toString().isNotEmpty
-                      ? item['name']!.toString()
-                      : '...',
+                  UiUtils.maskSurname(item['name']?.toString()),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   textAlign: TextAlign.center,

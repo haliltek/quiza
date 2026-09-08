@@ -5,6 +5,7 @@ import 'package:flutterquiz/features/quiz/cubits/contest_cubit.dart';
 import 'package:flutterquiz/features/quiz/cubits/quiz_category_cubit.dart';
 import 'package:flutterquiz/features/quiz/models/quiz_type.dart';
 import 'package:flutterquiz/features/system_config/cubits/system_config_cubit.dart';
+import 'package:flutterquiz/features/system_config/model/supported_question_language.dart';
 import 'package:flutterquiz/ui/widgets/custom_rounded_button.dart';
 import 'package:flutterquiz/utils/extensions.dart';
 import 'package:flutterquiz/utils/ui_utils.dart';
@@ -20,36 +21,89 @@ Future<void> showQuizLanguageSelectorSheet(BuildContext context) async {
   );
 }
 
-class _QuizLanguageSelectorWidget extends StatelessWidget {
+class _QuizLanguageSelectorWidget extends StatefulWidget {
   const _QuizLanguageSelectorWidget();
 
-  IconData _getExamIcon(String name) {
-    final lower = name.toLowerCase();
-    if (lower.contains('hakim') || lower.contains('savci') || lower.contains('hmgs')) {
-      return Icons.gavel_rounded;
+  @override
+  State<_QuizLanguageSelectorWidget> createState() =>
+      _QuizLanguageSelectorWidgetState();
+}
+
+class _QuizLanguageSelectorWidgetState
+    extends State<_QuizLanguageSelectorWidget> {
+  ExamTargetCategory _selectedFilter = ExamTargetCategory.all;
+
+  List<QuizLanguage> _filterExams(List<QuizLanguage> allExams) {
+    if (_selectedFilter == ExamTargetCategory.all) {
+      return allExams;
     }
-    if (lower.contains('icra') || lower.contains('hukuk')) {
-      return Icons.balance_rounded;
-    }
-    if (lower.contains('kaymakam') || lower.contains('idare')) {
-      return Icons.account_balance_rounded;
-    }
-    if (lower.contains('polis') || lower.contains('paem') || lower.contains('pomem')) {
-      return Icons.local_police_rounded;
-    }
-    if (lower.contains('gys') || lower.contains('yukselme')) {
-      return Icons.military_tech_rounded;
-    }
-    if (lower.contains('ales') || lower.contains('yds') || lower.contains('akademik')) {
-      return Icons.school_rounded;
-    }
-    return Icons.menu_book_rounded;
+    return allExams.where((e) => e.targetCategory == _selectedFilter).toList();
+  }
+
+  Widget _buildFilterChip({
+    required String label,
+    required ExamTargetCategory category,
+    required IconData icon,
+  }) {
+    final isSelected = _selectedFilter == category;
+    final primary = Theme.of(context).primaryColor;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 6),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _selectedFilter = category;
+          });
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? primary
+                : Theme.of(context).colorScheme.onTertiary.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? primary : Colors.transparent,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 13,
+                color: isSelected
+                    ? Colors.white
+                    : Theme.of(context).colorScheme.onTertiary,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.onTertiary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final supportedLanguages =
         context.read<SystemConfigCubit>().supportedQuizLanguages;
+    final filteredLanguages = _filterExams(supportedLanguages);
+    final primary = Theme.of(context).primaryColor;
 
     return Container(
       decoration: BoxDecoration(
@@ -72,7 +126,7 @@ class _QuizLanguageSelectorWidget extends StatelessWidget {
         builder: (context, state) {
           final textStyle = TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 17,
             color: Theme.of(context).colorScheme.onTertiary,
           );
 
@@ -86,126 +140,219 @@ class _QuizLanguageSelectorWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 40,
+                  width: 36,
                   height: 4,
-                  margin: const EdgeInsets.only(bottom: 12),
+                  margin: const EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     color: Colors.grey.withValues(alpha: 0.4),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                Text('Hedef Sınavınızı Seçin', style: textStyle),
-                const SizedBox(height: 6),
+                Text('KPSS & Sınav Hedefinizi Değiştirin', style: textStyle),
+                const SizedBox(height: 4),
                 Text(
-                  'Soru kategorileri seçtiğiniz sınava göre güncellenir',
+                  'Kategoriler ve sorular seçtiğiniz hedef kadroya göre filtrelenir',
                   style: TextStyle(
                     fontSize: 12,
-                    color: context.primaryTextColor.withValues(alpha: 0.6),
+                    color: context.primaryTextColor.withValues(alpha: 0.65),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
+
+                // Category Filter Pills
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _buildFilterChip(
+                        label: 'Tümü',
+                        category: ExamTargetCategory.all,
+                        icon: Icons.apps_rounded,
+                      ),
+                      _buildFilterChip(
+                        label: 'B Grubu',
+                        category: ExamTargetCategory.kpssEgitimDuzeyi,
+                        icon: Icons.school_rounded,
+                      ),
+                      _buildFilterChip(
+                        label: 'A Grubu',
+                        category: ExamTargetCategory.kpssAGrubu,
+                        icon: Icons.work_rounded,
+                      ),
+                      _buildFilterChip(
+                        label: 'Özel Alan',
+                        category: ExamTargetCategory.kpssOzelAlan,
+                        icon: Icons.psychology_rounded,
+                      ),
+                      _buildFilterChip(
+                        label: 'Diğer',
+                        category: ExamTargetCategory.digerKamuveHukuk,
+                        icon: Icons.gavel_rounded,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
                 const Divider(),
+
+                // List of filtered exams
                 Container(
                   constraints: BoxConstraints(
                     minHeight: context.height * .25,
                     maxHeight: context.height * .52,
                   ),
-                  child: ListView.separated(
-                    itemCount: supportedLanguages.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (_, i) {
-                      final supportedLanguage = supportedLanguages[i];
-                      final languageId = supportedLanguage.id;
-                      final isSelected = currLangId == languageId;
-                      final colorScheme = Theme.of(context).colorScheme;
-
-                      return InkWell(
-                        onTap: () {
-                          currLangId = languageId;
-                          if (state.languageId != languageId) {
-                            context.read<QuizLanguageCubit>().languageId =
-                                languageId;
-                          }
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 180),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? Theme.of(context)
-                                    .primaryColor
-                                    .withValues(alpha: 0.12)
-                                : colorScheme.onTertiary.withValues(alpha: 0.05),
-                            border: Border.all(
-                              color: isSelected
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.transparent,
-                              width: 1.5,
+                  child: filteredLanguages.isEmpty
+                      ? Center(
+                          child: Text(
+                            'Bu filtrede sınav bulunamadı.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: context.primaryTextColor.withValues(alpha: 0.6),
                             ),
-                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
+                        )
+                      : ListView.separated(
+                          itemCount: filteredLanguages.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 8),
+                          itemBuilder: (_, i) {
+                            final supportedLanguage = filteredLanguages[i];
+                            final languageId = supportedLanguage.id;
+                            final isSelected = currLangId == languageId;
+                            final colorScheme = Theme.of(context).colorScheme;
+
+                            return InkWell(
+                              onTap: () {
+                                currLangId = languageId;
+                                if (state.languageId != languageId) {
+                                  context.read<QuizLanguageCubit>().languageId =
+                                      languageId;
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(14),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 180),
+                                padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? Theme.of(context).primaryColor
+                                      ? primary.withValues(alpha: 0.1)
                                       : colorScheme.onTertiary
-                                          .withValues(alpha: 0.1),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  _getExamIcon(supportedLanguage.language),
-                                  color: isSelected
-                                      ? Colors.white
-                                      : colorScheme.onTertiary,
-                                  size: 18,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  supportedLanguage.language,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: isSelected
-                                        ? FontWeight.bold
-                                        : FontWeight.w600,
+                                          .withValues(alpha: 0.04),
+                                  border: Border.all(
                                     color: isSelected
-                                        ? Theme.of(context).primaryColor
-                                        : colorScheme.onTertiary,
+                                        ? primary
+                                        : Colors.transparent,
+                                    width: 1.5,
                                   ),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? primary
+                                            : colorScheme.onTertiary
+                                                .withValues(alpha: 0.08),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        supportedLanguage.icon,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : colorScheme.onTertiary,
+                                        size: 18,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  supportedLanguage.language,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: isSelected
+                                                        ? FontWeight.bold
+                                                        : FontWeight.w600,
+                                                    color: isSelected
+                                                        ? primary
+                                                        : colorScheme.onTertiary,
+                                                  ),
+                                                ),
+                                              ),
+                                              if (isSelected)
+                                                Icon(
+                                                  Icons.check_circle_rounded,
+                                                  color: primary,
+                                                  size: 20,
+                                                ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 3),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: isSelected
+                                                  ? primary
+                                                      .withValues(alpha: 0.15)
+                                                  : colorScheme.onTertiary
+                                                      .withValues(alpha: 0.06),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              supportedLanguage.shortBadge,
+                                              style: TextStyle(
+                                                fontSize: 9.5,
+                                                fontWeight: FontWeight.bold,
+                                                color: isSelected
+                                                    ? primary
+                                                    : colorScheme.onTertiary
+                                                        .withValues(alpha: 0.7),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            supportedLanguage.audienceDescription,
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              height: 1.3,
+                                              color: colorScheme.onTertiary
+                                                  .withValues(alpha: 0.65),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              if (isSelected)
-                                Icon(
-                                  Icons.check_circle_rounded,
-                                  color: Theme.of(context).primaryColor,
-                                  size: 22,
-                                ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
                 CustomRoundedButton(
                   onTap: Navigator.of(context).pop,
                   widthPercentage: 1,
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: primary,
                   buttonTitle: context.tr('save') ?? 'Tamam',
                   radius: 12,
                   showBorder: false,
-                  height: 48,
+                  height: 46,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
               ],
             ),
           );
@@ -214,3 +361,4 @@ class _QuizLanguageSelectorWidget extends StatelessWidget {
     );
   }
 }
+

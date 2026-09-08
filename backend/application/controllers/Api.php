@@ -1604,6 +1604,24 @@ class Api extends REST_Controller
         $this->response($response, REST_Controller::HTTP_OK);
     }
 
+    private function mask_name($name)
+    {
+        $name = trim($name ?? '');
+        if (empty($name)) {
+            return '';
+        }
+        $parts = preg_split('/\s+/', $name);
+        if (count($parts) <= 1) {
+            return $parts[0];
+        }
+        $last = array_pop($parts);
+        if (mb_substr($last, -1, 1, 'UTF-8') === '.' && mb_strlen($last, 'UTF-8') <= 2) {
+            return $name;
+        }
+        $initial = mb_substr($last, 0, 1, 'UTF-8');
+        return implode(' ', $parts) . ' ' . mb_strtoupper($initial, 'UTF-8') . '.';
+    }
+
     public function get_monthly_leaderboard_post()
     {
         try {
@@ -1625,7 +1643,7 @@ class Api extends REST_Controller
             $sort = 'r.user_rank';
             $order = 'ASC';
 
-            $sub_query = "SELECT s.*, @user_rank := @user_rank + 1 user_rank FROM ( SELECT m.id, user_id,u.email, u.name,u.profile, SUM(score) as score,date_created, MAX(last_updated) as last_updated FROM tbl_leaderboard_monthly m join tbl_users u on u.id = m.user_id WHERE u.status=1 AND YEAR(last_updated)=$year AND MONTH(last_updated)=$month AND u.status=1 GROUP BY user_id) s, (SELECT @user_rank := 0) init ORDER BY score DESC, last_updated ASC";
+            $sub_query = "SELECT s.user_id, s.email, s.name, s.profile, s.score, s.last_updated, ROW_NUMBER() OVER (ORDER BY s.score DESC, s.last_updated ASC) AS user_rank FROM (SELECT m.user_id, u.email, u.name, u.profile, SUM(m.score) AS score, MAX(m.last_updated) AS last_updated FROM tbl_leaderboard_monthly m JOIN tbl_users u ON u.id = m.user_id WHERE u.status = 1 AND YEAR(m.last_updated) = $year AND MONTH(m.last_updated) = $month GROUP BY m.user_id, u.email, u.name, u.profile) s";
 
             $this->db->reset_query();
             $this->db->from("($sub_query) r");
@@ -1645,6 +1663,9 @@ class Api extends REST_Controller
             if ($user_id) {
                 if (!empty($data)) {
                     for ($i = 0; $i < count($data); $i++) {
+                        if ($data[$i]['user_id'] != $user_id) {
+                            $data[$i]['name'] = $this->mask_name($data[$i]['name']);
+                        }
                         if (filter_var($data[$i]['profile'], FILTER_VALIDATE_URL) === false) {
                             // Not a valid URL. Its a image only or empty
                             $data[$i]['profile'] = ($data[$i]['profile']) ? base_url() . USER_IMG_PATH . $data[$i]['profile'] : '';
@@ -1660,6 +1681,9 @@ class Api extends REST_Controller
                     $topThreeUsersData = $topThree_sql->result_array();
 
                     for ($i = 0; $i < count($topThreeUsersData); $i++) {
+                        if ($topThreeUsersData[$i]['user_id'] != $user_id) {
+                            $topThreeUsersData[$i]['name'] = $this->mask_name($topThreeUsersData[$i]['name']);
+                        }
                         if (filter_var($topThreeUsersData[$i]['profile'], FILTER_VALIDATE_URL) === false) {
                             // Not a valid URL. Its a image only or empty
                             $topThreeUsersData[$i]['profile'] = ($topThreeUsersData[$i]['profile']) ? base_url() . USER_IMG_PATH . $topThreeUsersData[$i]['profile'] : '';
@@ -1742,14 +1766,7 @@ class Api extends REST_Controller
             $sort = 'r.user_rank';
             $order = 'ASC';
 
-            $this->db->select('d.id, user_id, u.email, u.name, u.profile,score, date_created, @user_rank := @user_rank + 1 AS user_rank', false);
-            $this->db->from("(SELECT @user_rank := 0) init, tbl_leaderboard_daily d");
-            $this->db->join('tbl_users u', 'u.id = d.user_id');
-            $this->db->where('u.status', 1);
-            $this->db->where('DATE(date_created)', $this->toDate);
-            $this->db->order_by('score', 'DESC');
-            $this->db->order_by('date_created', 'ASC');
-            $subQuery = $this->db->get_compiled_select();
+            $subQuery = "SELECT d.id, d.user_id, u.email, u.name, u.profile, d.score, d.date_created, ROW_NUMBER() OVER (ORDER BY d.score DESC, d.date_created ASC) AS user_rank FROM tbl_leaderboard_daily d JOIN tbl_users u ON u.id = d.user_id WHERE u.status = 1 AND DATE(d.date_created) = '$this->toDate'";
 
             $this->db->reset_query();
             $this->db->from("($subQuery) r");
@@ -1766,12 +1783,14 @@ class Api extends REST_Controller
             if ($user_id) {
                 if (!empty($data)) {
                     for ($i = 0; $i < count($data); $i++) {
+                        if ($data[$i]['user_id'] != $user_id) {
+                            $data[$i]['name'] = $this->mask_name($data[$i]['name']);
+                        }
                         if (filter_var($data[$i]['profile'], FILTER_VALIDATE_URL) === false) {
                             // Not a valid URL. Its a image only or empty
                             $data[$i]['profile'] = ($data[$i]['profile']) ? base_url() . USER_IMG_PATH . $data[$i]['profile'] : '';
                         }
                     }
-
 
                     $this->db->reset_query();
                     $this->db->from("($subQuery) r");
@@ -1781,6 +1800,9 @@ class Api extends REST_Controller
                     $topThree_sql = $this->db->get();
                     $topThreeUsersData = $topThree_sql->result_array();
                     for ($i = 0; $i < count($topThreeUsersData); $i++) {
+                        if ($topThreeUsersData[$i]['user_id'] != $user_id) {
+                            $topThreeUsersData[$i]['name'] = $this->mask_name($topThreeUsersData[$i]['name']);
+                        }
                         if (filter_var($topThreeUsersData[$i]['profile'], FILTER_VALIDATE_URL) === false) {
                             // Not a valid URL. Its a image only or empty
                             $topThreeUsersData[$i]['profile'] = ($topThreeUsersData[$i]['profile']) ? base_url() . USER_IMG_PATH . $topThreeUsersData[$i]['profile'] : '';
@@ -1863,9 +1885,9 @@ class Api extends REST_Controller
             $sort = 'r.user_rank';
             $order = 'ASC';
 
-            $sub_query = "(SELECT s.*, @user_rank := @user_rank + 1 AS user_rank FROM (SELECT m.id, m.user_id,u.email, u.name,u.profile, SUM(m.score) AS score,MAX(m.last_updated) as last_updated FROM tbl_leaderboard_monthly m JOIN tbl_users u ON u.id = m.user_id WHERE u.status = 1 GROUP BY m.user_id) s, (SELECT @user_rank := 0) init ORDER BY s.score DESC, s.last_updated ASC)";
+            $sub_query = "SELECT s.user_id, s.email, s.name, s.profile, s.score, s.last_updated, ROW_NUMBER() OVER (ORDER BY s.score DESC, s.last_updated ASC) AS user_rank FROM (SELECT m.user_id, u.email, u.name, u.profile, SUM(m.score) AS score, MAX(m.last_updated) AS last_updated FROM tbl_leaderboard_monthly m JOIN tbl_users u ON u.id = m.user_id WHERE u.status = 1 GROUP BY m.user_id, u.email, u.name, u.profile) s";
             $this->db->select('r.*');
-            $this->db->from("$sub_query r", false);
+            $this->db->from("($sub_query) r", false);
 
             $total = $this->db->count_all_results('', false);
             $this->db->order_by($sort, $order);
@@ -1879,6 +1901,9 @@ class Api extends REST_Controller
 
                 if (!empty($data)) {
                     for ($i = 0; $i < count($data); $i++) {
+                        if ($data[$i]['user_id'] != $user_id) {
+                            $data[$i]['name'] = $this->mask_name($data[$i]['name']);
+                        }
                         if (filter_var($data[$i]['profile'], FILTER_VALIDATE_URL) === false) {
                             // Not a valid URL. Its a image only or empty
                             $data[$i]['profile'] = ($data[$i]['profile']) ? base_url() . USER_IMG_PATH . $data[$i]['profile'] : '';
@@ -1894,6 +1919,9 @@ class Api extends REST_Controller
                     $topThreeUsersData = $top_three_user_rank_sql->result_array();
 
                     for ($i = 0; $i < count($topThreeUsersData); $i++) {
+                        if ($topThreeUsersData[$i]['user_id'] != $user_id) {
+                            $topThreeUsersData[$i]['name'] = $this->mask_name($topThreeUsersData[$i]['name']);
+                        }
                         if (filter_var($topThreeUsersData[$i]['profile'], FILTER_VALIDATE_URL) === false) {
                             // Not a valid URL. Its a image only or empty
                             $topThreeUsersData[$i]['profile'] = ($topThreeUsersData[$i]['profile']) ? base_url() . USER_IMG_PATH . $topThreeUsersData[$i]['profile'] : '';
@@ -7166,13 +7194,155 @@ class Api extends REST_Controller
 
     function myGlobalRank($user_id)
     {
+        $sub_query = "SELECT s.user_id, s.email, s.name, s.profile, s.score, s.last_updated, ROW_NUMBER() OVER (ORDER BY s.score DESC, s.last_updated ASC) AS user_rank FROM (SELECT m.user_id, u.email, u.name, u.profile, SUM(m.score) AS score, MAX(m.last_updated) AS last_updated FROM tbl_leaderboard_monthly m JOIN tbl_users u ON u.id = m.user_id WHERE u.status = 1 GROUP BY m.user_id, u.email, u.name, u.profile) s";
         $this->db->reset_query();
         $this->db->select('r.*');
-        $this->db->from("(SELECT s.*, @user_rank := @user_rank + 1 AS user_rank FROM (SELECT m.id, m.user_id,u.email, u.name,u.status,u.profile, SUM(m.score) AS score,MAX(last_updated) as last_updated FROM tbl_leaderboard_monthly m JOIN tbl_users u ON u.id = m.user_id WHERE u.status=1 GROUP BY m.user_id) s, (SELECT @user_rank := 0) init ORDER BY s.score DESC,s.last_updated ASC) r", false);
+        $this->db->from("($sub_query) r", false);
         $this->db->where('r.user_id', $user_id);
         $this->db->limit(1);
         $my_rank_sql = $this->db->get();
         $my_rank = $my_rank_sql->row_array();
         return  $my_rank;
+    }
+
+    public function get_study_notes_post()
+    {
+        try {
+            $is_user = $this->verify_token();
+            if (!$is_user['error']) {
+                $user_id = $is_user['user_id'];
+            } else {
+                $user_id = 0;
+            }
+
+            $language_id = $this->post('language_id') ?? 52;
+            $note_type = $this->post('note_type') ?? 'spot';
+            $category_id = $this->post('category_id');
+
+            $this->db->select('n.*, c.category_name, s.subcategory_name');
+            $this->db->from('tbl_study_notes n');
+            $this->db->join('tbl_category c', 'c.id = n.category_id', 'left');
+            $this->db->join('tbl_subcategory s', 's.id = n.subcategory_id', 'left');
+            $this->db->where('n.language_id', $language_id);
+            $this->db->where('n.note_type', $note_type);
+            $this->db->where('n.status', 1);
+
+            if (!empty($category_id) && $category_id != '0') {
+                $this->db->where('n.category_id', $category_id);
+            }
+
+            $this->db->order_by('n.category_id', 'ASC');
+            $this->db->order_by('n.subcategory_id', 'ASC');
+            $this->db->order_by('n.note_order', 'ASC');
+            $this->db->order_by('n.id', 'ASC');
+
+            $notes = $this->db->get()->result_array();
+
+            $completed_ids = [];
+            if ($user_id) {
+                $progress_rows = $this->db->select('note_id')
+                    ->where('user_id', $user_id)
+                    ->where('is_completed', 1)
+                    ->get('tbl_user_study_progress')
+                    ->result_array();
+                if (!empty($progress_rows)) {
+                    $completed_ids = array_column($progress_rows, 'note_id');
+                }
+            }
+
+            $total_count = count($notes);
+            $completed_count = 0;
+            $grouped = [];
+
+            foreach ($notes as &$note) {
+                $is_done = in_array($note['id'], $completed_ids) ? 1 : 0;
+                if ($is_done) {
+                    $completed_count++;
+                }
+                $note['is_completed'] = $is_done;
+
+                $group_key = !empty($note['topic_title']) ? $note['topic_title'] : (!empty($note['subcategory_name']) ? $note['subcategory_name'] : $note['category_name']);
+                if (!isset($grouped[$group_key])) {
+                    $grouped[$group_key] = [
+                        'topic_title' => $group_key,
+                        'category_id' => $note['category_id'],
+                        'category_name' => $note['category_name'] ?? '',
+                        'total' => 0,
+                        'completed' => 0,
+                        'items' => [],
+                    ];
+                }
+                $grouped[$group_key]['total']++;
+                if ($is_done) {
+                    $grouped[$group_key]['completed']++;
+                }
+                $grouped[$group_key]['items'][] = $note;
+            }
+
+            $response['error'] = false;
+            $response['total_count'] = (string)$total_count;
+            $response['completed_count'] = (string)$completed_count;
+            $response['progress_percent'] = $total_count > 0 ? (int)round(($completed_count / $total_count) * 100) : 0;
+            $response['topics'] = array_values($grouped);
+        } catch (Exception $e) {
+            $response['error'] = true;
+            $response['message'] = "122";
+            $response['error_msg'] = $e->getMessage();
+        }
+
+        $this->response($response, REST_Controller::HTTP_OK);
+    }
+
+    public function toggle_study_note_progress_post()
+    {
+        try {
+            $is_user = $this->verify_token();
+            if (!$is_user['error']) {
+                $user_id = $is_user['user_id'];
+            } else {
+                $this->response($is_user, REST_Controller::HTTP_OK);
+                return false;
+            }
+
+            $note_id = $this->post('note_id');
+            if (empty($note_id)) {
+                $response['error'] = true;
+                $response['message'] = "102";
+                $this->response($response, REST_Controller::HTTP_OK);
+                return false;
+            }
+
+            $existing = $this->db->where('user_id', $user_id)
+                ->where('note_id', $note_id)
+                ->get('tbl_user_study_progress')
+                ->row_array();
+
+            if ($existing) {
+                $new_status = $existing['is_completed'] ? 0 : 1;
+                $this->db->where('id', $existing['id'])->update('tbl_user_study_progress', [
+                    'is_completed' => $new_status
+                ]);
+            } else {
+                $new_status = 1;
+                $this->db->insert('tbl_user_study_progress', [
+                    'user_id' => $user_id,
+                    'note_id' => $note_id,
+                    'is_completed' => 1
+                ]);
+                $this->db->set('coins', 'coins + 1', FALSE)
+                    ->where('id', $user_id)
+                    ->update('tbl_users');
+            }
+
+            $response['error'] = false;
+            $response['note_id'] = $note_id;
+            $response['is_completed'] = $new_status;
+        } catch (Exception $e) {
+            $response['error'] = true;
+            $response['message'] = "122";
+            $response['error_msg'] = $e->getMessage();
+        }
+
+        $this->response($response, REST_Controller::HTTP_OK);
     }
 }

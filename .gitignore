@@ -52,4 +52,7 @@ backend/assets/MathJax/
 scratch/
 scratch_osym/*.pdf
 scratch_osym/*.png
+__pycache__/
+*.pyc
+
 

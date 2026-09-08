@@ -556,6 +556,246 @@ class HomeScreenState extends State<HomeScreen>
         : const SizedBox();
   }
 
+  Widget _buildStudyHubBanner() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: hzMargin),
+      child: InkWell(
+        onTap: () => globalCtx.pushNamed(Routes.studyHub),
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              colors: isDark
+                  ? const [Color(0xFF1E293B), Color(0xFF0F172A)]
+                  : [
+                      context.primaryColor.withValues(alpha: 0.95),
+                      const Color(0xFF1E3A8A),
+                    ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: (isDark ? Colors.black : context.primaryColor)
+                    .withValues(alpha: 0.25),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.12)
+                  : Colors.white.withValues(alpha: 0.25),
+              width: 1.2,
+            ),
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: -30,
+                right: -30,
+                child: Container(
+                  width: 130,
+                  height: 130,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.08),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.18),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.25),
+                            ),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.auto_awesome,
+                                size: 14,
+                                color: Color(0xFFFBBF24),
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                'ÇALIŞMA & TEKRAR ODASI',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF10B981),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            'YENİ',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      '10.000+ Bilgi Kartı & Spot Notlar',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        height: 1.25,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Kartı çevir anında öğren! Hap bilgiler, formüller ve özetlerle netlerini hızla artır.',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 12.5,
+                        height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildStudyTag('🃏 Kartı Çevir'),
+                          const SizedBox(width: 8),
+                          _buildStudyTag('⚡ Hap Bilgiler'),
+                          const SizedBox(width: 8),
+                          _buildStudyTag('📐 Formüller'),
+                          const SizedBox(width: 8),
+                          _buildStudyTag('📖 Özetler'),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFF34D399),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Aktif Sınava Göre Hazır',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.75),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Hemen Başla',
+                                style: TextStyle(
+                                  color: context.primaryColor,
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.arrow_forward_rounded,
+                                size: 14,
+                                color: context.primaryColor,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStudyTag(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.22),
+          width: 0.8,
+        ),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
   Widget _buildDailyAds() {
     var clicked = false;
     return BlocBuilder<RewardedAdCubit, RewardedAdState>(
@@ -1014,6 +1254,8 @@ class HomeScreenState extends State<HomeScreen>
                             userScore: _userScore,
                           ),
                           const SizedBox(height: 16),
+                          _buildStudyHubBanner(),
+                          const SizedBox(height: 16),
                           if (!_isGuest &&
                               _sysConfigCubit.isAdsEnable &&
                               _sysConfigCubit.isDailyAdsEnabled) ...[
@@ -1234,7 +1476,7 @@ class HomeScreenState extends State<HomeScreen>
           ? supported.first
           : const QuizLanguage(
               id: '52',
-              language: 'KPSS Lisans (GY-GK)',
+              language: 'KPSS Lisans (B Grubu - GY-GK)',
               languageCode: 'kpss_lis',
               isDefault: true,
             ),
@@ -1273,7 +1515,7 @@ class HomeScreenState extends State<HomeScreen>
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
-                  Icons.school_rounded,
+                  currentExam.icon,
                   color: context.primaryColor,
                   size: 20,
                 ),
@@ -1296,7 +1538,7 @@ class HomeScreenState extends State<HomeScreen>
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'HEDEF SINAV',
+                          currentExam.shortBadge,
                           style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,

@@ -109,15 +109,18 @@ class _SelfChallengeScreenState extends State<SelfChallengeScreen> {
         selectedSubcategory != _defaultSelectedSubcategoryValue &&
         selectedMinutes != null &&
         selectedNumberOfQuestions != null) {
-      //to see what keys to pass in arguments see static function route of SelfChallengeQuestionsScreen
+      final isAllTopics = selectedSubcategoryId == 'all' ||
+          selectedSubcategoryId == null ||
+          selectedSubcategoryId!.isEmpty;
 
+      //to see what keys to pass in arguments see static function route of SelfChallengeQuestionsScreen
       await Navigator.of(context).pushNamed(
         Routes.selfChallengeQuestions,
         arguments: {
           'numberOfQuestions': selectedNumberOfQuestions.toString(),
-          'categoryId': '', //categoryId
+          'categoryId': isAllTopics ? selectedCategoryId : '',
           'minutes': selectedMinutes,
-          'subcategoryId': selectedSubcategoryId,
+          'subcategoryId': isAllTopics ? '' : selectedSubcategoryId,
         },
       );
     } else {
@@ -286,11 +289,14 @@ class _SelfChallengeScreenState extends State<SelfChallengeScreen> {
 
   Widget _buildSubCategoryDropdownContainer(SubCategoryState state) {
     if (state is SubCategoryFetchSuccess) {
+      final list = <Map<String, String?>>[
+        {'name': 'Tüm Konular (Genel Karışık)', 'id': 'all'},
+        ...state.subcategoryList
+            .map((e) => {'name': e.subcategoryName, 'id': e.id}),
+      ];
       return _buildDropdown(
         forCategory: false,
-        values: state.subcategoryList
-            .map((e) => {'name': e.subcategoryName, 'id': e.id})
-            .toList(),
+        values: list,
         keyValue: 'selectSubcategorySuccess${state.categoryId}',
       );
     }
@@ -428,9 +434,8 @@ class _SelfChallengeScreenState extends State<SelfChallengeScreen> {
                   listener: (context, state) async {
                     if (state is SubCategoryFetchSuccess) {
                       setState(() {
-                        selectedSubcategoryId = state.subcategoryList.first.id;
-                        selectedSubcategory =
-                            state.subcategoryList.first.subcategoryName;
+                        selectedSubcategoryId = 'all';
+                        selectedSubcategory = 'Tüm Konular (Genel Karışık)';
                       });
                     } else if (state is SubCategoryFetchFailure) {
                       if (state.errorMessage == errorCodeUnauthorizedAccess) {

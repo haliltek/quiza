@@ -771,7 +771,7 @@ class _BattleRoomQuizScreenState extends State<BattleRoomQuizScreen>
                   return UserDetailsWithTimerContainer(
                     correctAnswers: opponent.correctAnswers.toString(),
                     isCurrentUser: false,
-                    name: opponent.name,
+                    name: UiUtils.maskSurname(opponent.name),
                     timerAnimationController:
                         opponentUserTimerAnimationController,
                     profileUrl: opponent.profileUrl,

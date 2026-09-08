@@ -135,14 +135,23 @@
                                             <!-- Category, Badge, Exam selection -->
                                             <div class="row">
                                                 <div class="form-group col-md-4">
-                                                    <label class="font-weight-bold">Hedef Kategori:</label>
+                                                    <label class="font-weight-bold">🎯 Hedef Sınav & Branş Dağıtım Modu:</label>
                                                     <select name="category_id" id="category_id" class="form-control select2">
-                                                        <option value="0" selected>⚡ Otomatik Branş Dağıtımı (Türkçe, Matematik, Tarih, Coğrafya, Vatandaşlık, Güncel)</option>
-                                                        <?php foreach ($categories as $cat) { ?>
-                                                            <option value="<?= $cat->id; ?>">
-                                                                <?= $cat->id . ' - ' . $cat->category_name; ?>
-                                                            </option>
-                                                        <?php } ?>
+                                                        <optgroup label="⚡ Otomatik Branş Dağıtım Modları (Önerilen)">
+                                                            <option value="auto_detect" selected>🤖 [AKILLI TESPİT] PDF'ten Otomatik Tanı (Önlisans / Lisans / Ortaöğretim)</option>
+                                                            <option value="auto_kpss_onlisans">⚡ [OTOMATİK] KPSS Önlisans - Branş Dağıtımı (Türkçe, Mat, Tarih, Coğrafya, Vatandaşlık)</option>
+                                                            <option value="auto_kpss_lisans">⚡ [OTOMATİK] KPSS Lisans - Branş Dağıtımı (Türkçe, Mat, Tarih, Coğrafya, Vatandaşlık)</option>
+                                                            <option value="auto_kpss_ortaogretim">⚡ [OTOMATİK] KPSS Ortaöğretim (Lise) - Branş Dağıtımı (Türkçe, Mat, Tarih, Coğrafya, Vatandaşlık)</option>
+                                                            <option value="auto_kpss_alan">⚡ [OTOMATİK] KPSS A Grubu - Alan Dağıtımı (Hukuk, İktisat, Maliye, Kamu, Muhasebe)</option>
+                                                            <option value="auto_hakimlik">⚡ [OTOMATİK] Hakimlik & Savcılık - Branş Dağıtımı (Ortak Alan & Hukuk Dalları)</option>
+                                                        </optgroup>
+                                                        <optgroup label="📂 Tek Bir Kategoriye Sabit Yükle">
+                                                            <?php foreach ($categories as $cat) { ?>
+                                                                <option value="<?= $cat->id; ?>">
+                                                                    <?= $cat->id . ' - ' . $cat->category_name; ?>
+                                                                </option>
+                                                            <?php } ?>
+                                                        </optgroup>
                                                     </select>
                                                 </div>
 
