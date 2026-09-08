@@ -5639,17 +5639,15 @@ class Api extends REST_Controller
                 }
             }
 
-            if ($is_bot == 0 && $score) {
+            if ($score) {
                 $this->set_monthly_leaderboard($user_id, $score);
             }
 
             if ($is_drawn) {
                 $user1_earnCoin = $user2_earnCoin = $entry_coin;
-                if ($is_bot == 0) {
-                    $this->set_coins($user_id, $entry_coin);
-                    $this->set_tracker_data($user_id, $entry_coin, 'wonBattle', 0); //0: add
-                    $this->set_users_battle_statistics($user1_id, $user2_id, $is_drawn, $winner_user_id);
-                }
+                $this->set_coins($user_id, $entry_coin);
+                $this->set_tracker_data($user_id, $entry_coin, 'wonBattle', 0); //0: add
+                $this->set_users_battle_statistics($user1_id, $user2_id, $is_drawn, $winner_user_id);
             } else if ($winner_user_id) {
                 $earnCoinVal = $entry_coin * 2;
                 $earnCoin = floor($earnCoinVal);
@@ -5658,19 +5656,17 @@ class Api extends REST_Controller
                 } else if ($winner_user_id == $user2_id) {
                     $user2_earnCoin = $earnCoin;
                 }
-                if ($is_bot == 0 && $user_id == $winner_user_id) {
+                if ($user_id == $winner_user_id) {
                     $this->set_coins($user_id, $earnCoin);
                     $this->set_tracker_data($user_id, $earnCoin, 'wonBattle', 0); //0: add
                     $this->set_users_battle_statistics($user1_id, $user2_id, $is_drawn, $winner_user_id);
                 }
             }
 
-            if ($is_bot == 0) {
-                if ($user1Quickest && $user_id == $user1_id) {
-                    $this->set_badges($user_id, $this->ULTIMATE_PLAYER, 1);
-                } else if ($user2Quickest && $user_id == $user2_id) {
-                    $this->set_badges($user_id, $this->ULTIMATE_PLAYER, 1);
-                }
+            if ($user1Quickest && $user_id == $user1_id) {
+                $this->set_badges($user_id, $this->ULTIMATE_PLAYER, 1);
+            } else if ($user2Quickest && $user_id == $user2_id) {
+                $this->set_badges($user_id, $this->ULTIMATE_PLAYER, 1);
             }
 
             if ($user_id == $user1_id) {

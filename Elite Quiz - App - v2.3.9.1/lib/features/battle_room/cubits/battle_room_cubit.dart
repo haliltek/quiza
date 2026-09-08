@@ -344,6 +344,8 @@ final class BattleRoomCubit extends Cubit<BattleRoomState> {
     String? uid,
     int? entryFee,
     String? botName,
+    String? botProfileUrl,
+    String? botUid,
     String? questionLanguageId,
   }) async {
     emit(const BattleRoomCreating());
@@ -360,6 +362,8 @@ final class BattleRoomCubit extends Cubit<BattleRoomState> {
             uid: uid!,
             roomCode: roomCode,
             botName: botName,
+            botProfileUrl: botProfileUrl,
+            botUid: botUid,
             roomType: 'public',
             entryFee: entryFee,
             questionLanguageId: questionLanguageId!,

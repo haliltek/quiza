@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterquiz/core/constants/api_exception.dart';
 import 'package:flutterquiz/core/constants/constants.dart';
+import 'package:flutterquiz/features/battle_room/models/bot_persona.dart';
 import 'package:flutterquiz/features/system_config/cubits/system_config_cubit.dart';
 import 'package:flutterquiz/utils/api_utils.dart';
 import 'package:flutterquiz/utils/crashlytics_utils.dart';
@@ -353,8 +354,21 @@ final class BattleRoomRemoteDataSource {
     String? roomType,
     int? entryFee,
     String? botName,
+    String? botProfileUrl,
+    String? botUid,
   }) async {
     try {
+      final defaultBot = BotPersona.getRandomBot();
+      final assignedBotName = (botName != null && botName.isNotEmpty && botName != 'Robot')
+          ? botName
+          : defaultBot.name;
+      final assignedBotProfile = (botProfileUrl != null && botProfileUrl.isNotEmpty)
+          ? botProfileUrl
+          : defaultBot.profileUrl;
+      final assignedBotUid = (botUid != null && botUid.isNotEmpty && botUid != '000')
+          ? botUid
+          : defaultBot.uid;
+
       final documentReference = await _firebaseFirestore
           .collection(battleRoomCollection)
           .add({
@@ -373,12 +387,12 @@ final class BattleRoomRemoteDataSource {
               'profileUrl': profileUrl,
             },
             'user2': {
-              'name': botName ?? 'Robot',
+              'name': assignedBotName,
               'points': 0,
               'correctAnswers': 0,
               'answers': <String>[],
-              'uid': '000',
-              'profileUrl': context.read<SystemConfigCubit>().botImage,
+              'uid': assignedBotUid,
+              'profileUrl': assignedBotProfile,
             },
             'createdAt': Timestamp.now(),
           });

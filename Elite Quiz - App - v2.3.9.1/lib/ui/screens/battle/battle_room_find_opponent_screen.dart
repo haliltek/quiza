@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterquiz/commons/commons.dart';
 import 'package:flutterquiz/core/core.dart';
 import 'package:flutterquiz/features/battle_room/cubits/battle_room_cubit.dart';
+import 'package:flutterquiz/features/battle_room/models/bot_persona.dart';
 import 'package:flutterquiz/features/profile_management/cubits/user_details_cubit.dart';
 import 'package:flutterquiz/features/quiz/models/quiz_type.dart';
 import 'package:flutterquiz/features/system_config/cubits/system_config_cubit.dart';
@@ -151,22 +152,45 @@ class _BattleRoomFindOpponentScreenState
     }
   }
 
+  void _startAutoBotMatch() {
+    if (playWithBot) return;
+    setState(() => playWithBot = true);
+
+    waitForOpponentTimer?.cancel();
+    letterAnimationController.stop();
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    }
+
+    // Clean up empty searching room
+    context.read<BattleRoomCubit>().deleteBattleRoom();
+
+    final bot = BotPersona.getRandomBot();
+    final userProfile = context.read<UserDetailsCubit>().getUserProfile();
+
+    context.read<BattleRoomCubit>().createRoomWithBot(
+      categoryId: widget.categoryId,
+      charType: context
+          .read<SystemConfigCubit>()
+          .oneVsOneBattleRoomCodeCharType,
+      name: userProfile.name,
+      uid: userProfile.userId,
+      profileUrl: userProfile.profileUrl,
+      botName: bot.name,
+      botProfileUrl: bot.profileUrl,
+      botUid: bot.uid,
+      questionLanguageId: UiUtils.getCurrentQuizLanguageId(context),
+      entryFee: context.read<SystemConfigCubit>().randomBattleEntryCoins,
+      context: context,
+    );
+  }
+
   //this will be call only when user has created room successfully
   void setWaitForOpponentTimer() {
     waitForOpponentTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (waitingTime == 0) {
-        //delete room so other user can not join
-        context.read<BattleRoomCubit>().deleteBattleRoom();
-        //stop other activities
-        letterAnimationController.stop();
-        if (scrollController.hasClients) {
-          scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        }
-        setState(() {
-          waitForOpponent = false;
-        });
-
         timer.cancel();
+        _startAutoBotMatch();
       } else {
         waitingTime--;
       }
@@ -501,30 +525,7 @@ class _BattleRoomFindOpponentScreenState
                     titleColor: Theme.of(context).colorScheme.surface,
                     elevation: 5,
 
-                    onTap: () {
-                      /// To avoid button Spamming
-                      if (playWithBot) return;
-
-                      setState(() => playWithBot = true);
-
-                      final userProfile = context
-                          .read<UserDetailsCubit>()
-                          .getUserProfile();
-                      context.read<BattleRoomCubit>().createRoomWithBot(
-                        categoryId: widget.categoryId,
-                        charType: context
-                            .read<SystemConfigCubit>()
-                            .oneVsOneBattleRoomCodeCharType,
-                        name: userProfile.name,
-                        uid: userProfile.userId,
-                        profileUrl: userProfile.profileUrl,
-                        botName: context.tr('botNameLbl'),
-                        questionLanguageId: UiUtils.getCurrentQuizLanguageId(
-                          context,
-                        ),
-                        context: context,
-                      );
-                    },
+                    onTap: _startAutoBotMatch,
                   ),
                   CustomRoundedButton(
                     widthPercentage: 0.425,

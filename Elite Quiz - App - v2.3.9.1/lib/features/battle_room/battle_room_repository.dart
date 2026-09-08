@@ -85,6 +85,8 @@ final class BattleRoomRepository {
     String? roomType,
     int? entryFee,
     String? botName,
+    String? botProfileUrl,
+    String? botUid,
   }) async {
     return _battleRoomRemoteDataSource.createBattleRoomWithBot(
       categoryId: categoryId,
@@ -92,6 +94,8 @@ final class BattleRoomRepository {
       profileUrl: profileUrl,
       uid: uid,
       botName: botName,
+      botProfileUrl: botProfileUrl,
+      botUid: botUid,
       entryFee: entryFee,
       roomCode: roomCode,
       roomType: roomType,

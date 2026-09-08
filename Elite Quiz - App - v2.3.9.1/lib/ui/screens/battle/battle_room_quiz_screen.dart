@@ -169,6 +169,12 @@ class _BattleRoomQuizScreenState extends State<BattleRoomQuizScreen>
 
   late final String _currUserId = context.read<UserDetailsCubit>().userId();
 
+  // Autonomous bot simulation fields
+  Timer? _botAnswerTimer;
+  bool _botHasAnsweredCurrentQuestion = false;
+  late final int _botAccuracyPercent = 75 + Random().nextInt(16); // 75% to 90%
+  bool _botGreetingSent = false;
+
   @override
   void initState() {
     super.initState();
@@ -182,28 +188,50 @@ class _BattleRoomQuizScreenState extends State<BattleRoomQuizScreen>
     //
 
     Future.delayed(Duration.zero, () {
-      if (!widget.playWithBot) {
-        context.read<UpdateCoinsCubit>().updateCoins(
-          coins: context.read<BattleRoomCubit>().getEntryFee(),
-          title: playedBattleKey,
-          addCoin: false,
-        );
-        context.read<UserDetailsCubit>().updateCoins(
-          addCoin: false,
-          coins: context.read<BattleRoomCubit>().getEntryFee(),
-        );
+      context.read<UpdateCoinsCubit>().updateCoins(
+        coins: context.read<BattleRoomCubit>().getEntryFee(),
+        title: playedBattleKey,
+        addCoin: false,
+      );
+      context.read<UserDetailsCubit>().updateCoins(
+        addCoin: false,
+        coins: context.read<BattleRoomCubit>().getEntryFee(),
+      );
+
+      // Warm humanized bot greeting occasionally at match start
+      if (widget.playWithBot && !_botGreetingSent && Random().nextBool()) {
+        _botGreetingSent = true;
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (!mounted) return;
+          final greetings = ['Başarılar!', 'Hadi bakalım!', 'İyi olan kazansın!', 'Bol şans!'];
+          final msg = greetings[Random().nextInt(greetings.length)];
+          final opponent = context.read<BattleRoomCubit>().getOpponentUserDetails(_currUserId);
+          final roomId = context.read<BattleRoomCubit>().getRoomId();
+          if (opponent.uid.isNotEmpty && roomId.isNotEmpty) {
+            context.read<MessageCubit>().addMessage(
+              message: msg,
+              by: opponent.uid,
+              roomId: roomId,
+              isTextMessage: true,
+            );
+          }
+        });
       }
     });
 
     initializeAnimation();
     initMessageListener();
     questionContentAnimationController.forward();
+    if (widget.playWithBot) {
+      _scheduleBotAnswer();
+    }
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     WakelockPlus.disable();
+    _botAnswerTimer?.cancel();
     timerAnimationController
       ..removeStatusListener(currentUserTimerAnimationStatusListener)
       ..dispose();
@@ -296,6 +324,69 @@ class _BattleRoomQuizScreenState extends State<BattleRoomQuizScreen>
     }
   }
 
+  void _scheduleBotAnswer() {
+    if (!widget.playWithBot) return;
+    _botAnswerTimer?.cancel();
+    _botHasAnsweredCurrentQuestion = false;
+
+    // Realistic human thinking time between 3.2 and 6.5 seconds
+    final maxAllowed = max(2.5, durationPerQuestion - 2.0);
+    final thinkSeconds = (3.2 + Random().nextDouble() * 3.3).clamp(2.2, maxAllowed);
+
+    _botAnswerTimer = Timer(Duration(milliseconds: (thinkSeconds * 1000).toInt()), () {
+      if (mounted && !_botHasAnsweredCurrentQuestion) {
+        _executeBotAnswer();
+      }
+    });
+  }
+
+  void _executeBotAnswer() {
+    if (_botHasAnsweredCurrentQuestion || !mounted) return;
+    _botHasAnsweredCurrentQuestion = true;
+    _botAnswerTimer?.cancel();
+
+    final battleRoomCubit = context.read<BattleRoomCubit>();
+    final questions = battleRoomCubit.getQuestions();
+    if (currentQuestionIndex >= questions.length) return;
+
+    opponentUserTimerAnimationController.stop();
+
+    final q = questions[currentQuestionIndex];
+    final correctAnswer = AnswerEncryption.decryptCorrectAnswer(
+      rawKey: context.read<UserDetailsCubit>().getUserFirebaseId(),
+      correctAnswer: q.correctAnswer!,
+    );
+
+    // Dynamic accuracy rate between 75% and 90%
+    final roll = Random().nextInt(100);
+    final isCorrect = roll < _botAccuracyPercent;
+
+    String submittedAnswer;
+    if (isCorrect) {
+      submittedAnswer = correctAnswer;
+    } else {
+      final wrongOptions = q.answerOptions!.where((opt) => opt.id != correctAnswer).toList();
+      if (wrongOptions.isNotEmpty) {
+        submittedAnswer = wrongOptions[Random().nextInt(wrongOptions.length)].id!;
+      } else {
+        submittedAnswer = correctAnswer;
+      }
+    }
+
+    final opponent = battleRoomCubit.getOpponentUserDetails(_currUserId);
+    final timeTook = (durationPerQuestion * opponentUserTimerAnimationController.value)
+        .toInt()
+        .toString();
+
+    battleRoomCubit.submitAnswer(
+      opponent.uid,
+      submittedAnswer,
+      isAnswerCorrect: submittedAnswer == correctAnswer,
+      questionId: q.id!,
+      timeTookToSubmitAnswer: timeTook,
+    );
+  }
+
   //to submit the answer
   Future<void> submitAnswer(String submittedAnswer) async {
     timerAnimationController.stop();
@@ -329,38 +420,16 @@ class _BattleRoomQuizScreenState extends State<BattleRoomQuizScreen>
                 .toString(),
       );
 
-      if (widget.playWithBot) {
-        submitRobotAnswer();
+      // If playing with bot and bot hasn't answered yet, prompt bot to finish promptly (within 800ms)
+      if (widget.playWithBot && !_botHasAnsweredCurrentQuestion) {
+        _botAnswerTimer?.cancel();
+        _botAnswerTimer = Timer(const Duration(milliseconds: 800), () {
+          if (mounted && !_botHasAnsweredCurrentQuestion) {
+            _executeBotAnswer();
+          }
+        });
       }
     }
-  }
-
-  void submitRobotAnswer() {
-    opponentUserTimerAnimationController.stop();
-
-    //submitted answer will be id of the answerOption
-    final battleRoomCubit = context.read<BattleRoomCubit>();
-    final questions = battleRoomCubit.getQuestions();
-
-    final correctAnswer = AnswerEncryption.decryptCorrectAnswer(
-      rawKey: context.read<UserDetailsCubit>().getUserFirebaseId(),
-      correctAnswer: questions[currentQuestionIndex].correctAnswer!,
-    );
-
-    final options = questions[currentQuestionIndex].answerOptions!.toList();
-    final randomIdx = Random.secure().nextInt(options.length);
-    final submittedAnswer = options[randomIdx].id!;
-
-    battleRoomCubit.submitAnswer(
-      context.read<BattleRoomCubit>().getOpponentUserDetails(_currUserId).uid,
-      submittedAnswer,
-      isAnswerCorrect: submittedAnswer == correctAnswer,
-      questionId: currQuestion.id!,
-      timeTookToSubmitAnswer:
-          (durationPerQuestion * opponentUserTimerAnimationController.value)
-              .toInt()
-              .toString(),
-    );
   }
 
   //if user has submitted the answer for current question
@@ -373,6 +442,9 @@ class _BattleRoomQuizScreenState extends State<BattleRoomQuizScreen>
 
   //next question
   void changeQuestion() {
+    _botAnswerTimer?.cancel();
+    _botHasAnsweredCurrentQuestion = false;
+
     questionAnimationController.forward(from: 0).then((value) {
       //need to dispose the animation controllers
       questionAnimationController.dispose();
@@ -384,6 +456,9 @@ class _BattleRoomQuizScreenState extends State<BattleRoomQuizScreen>
       });
       //load content(options, image etc) of question
       questionContentAnimationController.forward();
+      if (widget.playWithBot) {
+        _scheduleBotAnswer();
+      }
     });
   }
 
@@ -833,9 +908,7 @@ class _BattleRoomQuizScreenState extends State<BattleRoomQuizScreen>
   }
 
   Widget _buildMessageButton() {
-    return widget.playWithBot
-        ? const SizedBox.shrink()
-        : AnimatedBuilder(
+    return AnimatedBuilder(
             animation: messageBoxAnimationController,
             builder: (context, child) {
               return InkWell(
