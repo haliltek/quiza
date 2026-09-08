@@ -75,15 +75,14 @@
                                                     <label class="control-label"><?= lang('ai_model'); ?> <small class="text-muted">(OpenRouter Model)</small></label><br>
                                                     <input type="text" name="openrouter_model" id="openrouter_model" list="openrouter_model_list" class="form-control" placeholder="Select or type model..." value="<?= $openrouter_model['message'] ?? '' ?>">
                                                     <datalist id="openrouter_model_list">
-                                                        <option value="meta-llama/llama-3.3-70b-instruct">Meta: Llama 3.3 70B Instruct (Recommended)</option>
-                                                        <option value="deepseek/deepseek-chat">DeepSeek: DeepSeek V3</option>
-                                                        <option value="deepseek/deepseek-r1">DeepSeek: DeepSeek R1 (Reasoning)</option>
+                                                        <option value="qwen/qwen-2.5-72b-instruct">Qwen: Qwen 2.5 72B Instruct (Önerilen Qwen - Çok Ucuz & Başarılı)</option>
+                                                        <option value="qwen/qwen-2.5-7b-instruct">Qwen: Qwen 2.5 7B Instruct (Ultra Hızlı & En Ucuz)</option>
+                                                        <option value="openrouter/free">OpenRouter: Free Auto (Tamamen Ücretsiz)</option>
+                                                        <option value="deepseek/deepseek-chat">DeepSeek: DeepSeek V3 (Ekonomik & Güçlü)</option>
+                                                        <option value="meta-llama/llama-3.3-70b-instruct">Meta: Llama 3.3 70B Instruct</option>
                                                         <option value="anthropic/claude-3.5-sonnet">Anthropic: Claude 3.5 Sonnet</option>
-                                                        <option value="google/gemini-2.0-flash-001">Google: Gemini 2.0 Flash</option>
                                                         <option value="openai/gpt-4o-mini">OpenAI: GPT-4o Mini</option>
-                                                        <option value="openai/gpt-4o">OpenAI: GPT-4o</option>
                                                         <option value="mistralai/mistral-large-2411">Mistral: Mistral Large 2411</option>
-                                                        <option value="qwen/qwen-2.5-72b-instruct">Qwen: Qwen 2.5 72B Instruct</option>
                                                     </datalist>
                                                 </div>
                                                 <div class="form-group col-md-4 col-lg-4 col-sm-12 col-12 openrouterData">

@@ -953,8 +953,12 @@ class Settings extends CI_Controller
                                         $checkData = $this->checkOpenAIKeyAndModel($apiKey, $model);
                                     }
                                 } else if ($ai_provider == 'openrouter') {
-                                    $model = $this->input->post('openrouter_model');
-                                    $apiKey = $this->input->post('openrouter_api_key');
+                                    $model = trim($this->input->post('openrouter_model'));
+                                    $apiKey = trim($this->input->post('openrouter_api_key'));
+                                    if (strpos($apiKey, 'xsk-or-v1-') === 0) {
+                                        $apiKey = substr($apiKey, 1);
+                                        $_POST['openrouter_api_key'] = $apiKey;
+                                    }
                                     if ($model && $apiKey) {
                                         $checkData = $this->checkOpenRouterKeyAndModel($apiKey, $model);
                                     }
@@ -1092,6 +1096,11 @@ class Settings extends CI_Controller
 
     function checkOpenRouterKeyAndModel($apiKey, $model)
     {
+        $apiKey = trim($apiKey);
+        if (strpos($apiKey, 'xsk-or-v1-') === 0) {
+            $apiKey = substr($apiKey, 1);
+        }
+
         // 1. Validate API key via auth endpoint
         $chAuth = curl_init("https://openrouter.ai/api/v1/auth/key");
         curl_setopt_array($chAuth, [
@@ -1107,7 +1116,7 @@ class Settings extends CI_Controller
         curl_close($chAuth);
 
         if ($authHttpCode === 401) {
-            return ['status' => false, 'message' => 'Geçersiz OpenRouter API Anahtarı. Lütfen geçerli bir anahtar girin.'];
+            return ['status' => false, 'message' => 'Geçersiz OpenRouter API Anahtarı. Anahtarınızın başında fazladan harf veya boşluk olmadığını ve "sk-or-v1-..." ile başladığını kontrol edin.'];
         }
 
         // 2. Validate model & completion availability with lightweight probe
@@ -1146,8 +1155,16 @@ class Settings extends CI_Controller
         $decoded = json_decode($response, true);
         $errorMsg = $decoded['error']['message'] ?? '';
 
-        if ($httpCode === 404 || stripos($errorMsg, 'not found') !== false) {
-            return ['status' => false, 'message' => 'Model bulunamadı: "' . htmlspecialchars($model) . '". Lütfen OpenRouter model adını kontrol edin.'];
+        // Specific Guardrail detection
+        if (stripos($errorMsg, 'guardrail') !== false || stripos($errorMsg, 'data policy') !== false) {
+            return [
+                'status' => false,
+                'message' => 'API Anahtarınız GEÇERLİ, fakat OpenRouter Guardrail kısıtlaması aktif! OpenRouter panelinizden Guardrail kuralını kapatmanız gerekiyor: https://openrouter.ai/workspaces/default/guardrails'
+            ];
+        }
+
+        if ($httpCode === 404 && (stripos($errorMsg, 'not found') !== false || stripos($errorMsg, 'no endpoints') !== false)) {
+            return ['status' => false, 'message' => 'Model bulunamadı: "' . htmlspecialchars($model) . '". Lütfen OpenRouter model adını kontrol edin (örn: qwen/qwen-2.5-72b-instruct).'];
         }
 
         if ($httpCode === 402 || stripos($errorMsg, 'credits') !== false || stripos($errorMsg, 'payment') !== false) {

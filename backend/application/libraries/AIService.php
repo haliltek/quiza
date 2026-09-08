@@ -17,7 +17,11 @@ class AiService
             $this->apiKey = is_settings('openai_api_key');
         } else if ($this->provider == 'openrouter') {
             $this->model = is_settings('openrouter_model');
-            $this->apiKey = is_settings('openrouter_api_key');
+            $rawKey = trim(is_settings('openrouter_api_key'));
+            if (strpos($rawKey, 'xsk-or-v1-') === 0) {
+                $rawKey = substr($rawKey, 1);
+            }
+            $this->apiKey = $rawKey;
         }
     }
 
