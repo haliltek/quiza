@@ -45,6 +45,33 @@ class Book_Importer extends CI_Controller
         $category_id = intval($this->input->post('category_id') ?? 11);
         $subcategory_id = intval($this->input->post('subcategory_id') ?? 0);
         $exam_id = intval($this->input->post('exam_id') ?? 0);
+        $html_source = trim($this->input->post('html_source') ?? '');
+
+        // Handle raw HTML source paste
+        if (!empty($html_source)) {
+            $result = $this->parse_scribd_html_string($html_source, $badge);
+            if ($result['error']) {
+                echo json_encode($result);
+                return;
+            }
+            $this->session->set_userdata('book_import_cache', [
+                'questions' => $result['questions'],
+                'category_id' => $category_id,
+                'subcategory_id' => $subcategory_id,
+                'exam_id' => $exam_id,
+                'badge' => $badge,
+                'title' => $result['title']
+            ]);
+
+            echo json_encode([
+                'error' => false,
+                'title' => $result['title'],
+                'total' => count($result['questions']),
+                'preview' => array_slice($result['questions'], 0, 30),
+                'message' => count($result['questions']) . ' soru ve çözüm kaynak kodundan başarıyla analiz edildi.'
+            ]);
+            return;
+        }
 
         if (empty($url) && empty($_FILES['pdf_file']['name'])) {
             echo json_encode(['error' => true, 'message' => 'Lütfen geçerli bir kitap linki (Scribd/PDF) girin veya PDF yükleyin.']);
@@ -221,8 +248,14 @@ class Book_Importer extends CI_Controller
         $html = curl_exec($ch);
         curl_close($ch);
 
-        if (empty($html)) {
-            return ['error' => true, 'message' => 'Scribd belgesine ulaşılamadı.'];
+        if (empty($html) || strpos($html, 'Client Challenge') !== false) {
+            return [
+                'error' => true,
+                'is_bot_challenge' => true,
+                'doc_id' => $docId,
+                'embed_url' => $embedUrl,
+                'message' => 'Scribd doğrudan sunucu bağlantısını bot koruması (Kasada Challenge) ile engelledi.'
+            ];
         }
 
         // Title
@@ -232,7 +265,13 @@ class Book_Importer extends CI_Controller
         // Find page URLs
         preg_match_all('/pageNum:\s*(\d+).*?contentUrl:\s*"([^"]+)"/s', $html, $pageMatches);
         if (empty($pageMatches[1])) {
-            return ['error' => true, 'message' => 'Scribd belgesinde sayfa içeriği tespit edilemedi.'];
+            return [
+                'error' => true,
+                'is_bot_challenge' => true,
+                'doc_id' => $docId,
+                'embed_url' => $embedUrl,
+                'message' => 'Scribd sayfa içeriği doğrudan okunamadı (Bot Koruması).'
+            ];
         }
 
         $pageUrls = [];
@@ -241,8 +280,6 @@ class Book_Importer extends CI_Controller
         }
 
         $allQuestions = [];
-        $limitPages = min(count($pageUrls), 196);
-
         // Fetch pages and extract
         foreach ($pageUrls as $pnum => $pageUrl) {
             if ($pnum < 5) continue; // skip front cover/toc
@@ -266,11 +303,132 @@ class Book_Importer extends CI_Controller
             }
         }
 
+        $cleaned = $this->clean_extracted_questions($allQuestions);
+
         return [
             'error' => false,
             'title' => $title,
-            'questions' => $allQuestions
+            'questions' => $cleaned
         ];
+    }
+
+    private function parse_scribd_html_string($html, $badge)
+    {
+        if (empty($html)) {
+            return ['error' => true, 'message' => 'HTML kaynak kodu boş olamaz.'];
+        }
+
+        // Title
+        preg_match('/<title>(.*?)<\/title>/', $html, $tm);
+        $title = !empty($tm[1]) ? str_replace(' | PDF', '', $tm[1]) : 'Scribd Kitap Soru Bankası';
+
+        // Find page URLs via addPage or jsonp urls
+        $pageUrls = [];
+        preg_match_all('/pageNum:\s*(\d+).*?contentUrl:\s*"([^"]+)"/s', $html, $pageMatches);
+        if (!empty($pageMatches[1])) {
+            foreach ($pageMatches[1] as $idx => $pnum) {
+                $pageUrls[intval($pnum)] = $pageMatches[2][$idx];
+            }
+        } else {
+            // Fallback: search for direct scribdassets URLs
+            preg_match_all('/(https?:\/\/html\.scribdassets\.com\/[^\/]+\/pages\/(\d+)-[a-zA-Z0-9]+\.jsonp)/', $html, $assetMatches);
+            if (!empty($assetMatches[1])) {
+                foreach ($assetMatches[1] as $idx => $u) {
+                    $pnum = intval($assetMatches[2][$idx]);
+                    $pageUrls[$pnum] = $u;
+                }
+            }
+        }
+
+        if (empty($pageUrls)) {
+            return [
+                'error' => true,
+                'message' => 'Yapıştırılan HTML kaynağında Scribd sayfa bağlantısı tespit edilemedi. Lütfen Scribd embed sayfasında Ctrl+U yaparak tüm kaynak kodunu kopyaladığınızdan emin olun.'
+            ];
+        }
+
+        ksort($pageUrls);
+        $allQuestions = [];
+
+        foreach ($pageUrls as $pnum => $pageUrl) {
+            if ($pnum < 5) continue; // skip cover/toc
+
+            $ch = curl_init($pageUrl);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 6);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+            $raw = curl_exec($ch);
+            curl_close($ch);
+
+            if (empty($raw)) continue;
+            if (substr($raw, 0, 2) === "\x1f\x8b") {
+                $raw = @gzdecode($raw);
+            }
+            if (empty($raw)) continue;
+
+            $pageQuestions = $this->parse_scribd_page_spans($raw, $pnum, $title, $badge);
+            foreach ($pageQuestions as $pq) {
+                $allQuestions[] = $pq;
+            }
+        }
+
+        $cleaned = $this->clean_extracted_questions($allQuestions);
+
+        if (empty($cleaned)) {
+            return ['error' => true, 'message' => 'Sayfalardan soru ve şık metinleri ayrıştırılamadı.'];
+        }
+
+        return [
+            'error' => false,
+            'title' => $title,
+            'questions' => $cleaned
+        ];
+    }
+
+    private function clean_extracted_questions($questions)
+    {
+        $cleaned = [];
+        foreach ($questions as $q) {
+            $q_text = $q['question'] ?? '';
+            $opt_a = $q['optiona'] ?? '';
+            $opt_b = $q['optionb'] ?? '';
+            $opt_c = $q['optionc'] ?? '';
+            $opt_d = $q['optiond'] ?? '';
+            $opt_e = $q['optione'] ?? '';
+            $ans = strtolower(trim($q['answer'] ?? ''));
+            $sol = $q['solution'] ?? '';
+
+            // Clean leading numbering from question text
+            $q_text = preg_replace('/^\s*\d{1,3}\.\s*/u', '', $q_text);
+            $q_text = preg_replace('/[\r\n\t]+/', ' ', $q_text);
+            $q_text = preg_replace('/\s+/', ' ', $q_text);
+            $q_text = trim($q_text);
+
+            // Clean options
+            $opt_a = trim(preg_replace('/\s+/', ' ', $opt_a));
+            $opt_b = trim(preg_replace('/\s+/', ' ', $opt_b));
+            $opt_c = trim(preg_replace('/\s+/', ' ', $opt_c));
+            $opt_d = trim(preg_replace('/\s+/', ' ', $opt_d));
+            $opt_e = trim(preg_replace('/\s+/', ' ', $opt_e));
+
+            // Clean solution
+            $sol = preg_replace('/\s*(Hakimlik|Hukuk Meslekleri|Akademisi)\s*.*$/iu', '', $sol);
+            $sol = preg_replace('/\s+/', ' ', $sol);
+            $sol = trim($sol);
+
+            if (!empty($opt_a) && !empty($opt_b) && !empty($opt_c) && !empty($opt_d) && !empty($opt_e) && !empty($ans) && mb_strlen($q_text) > 5) {
+                $q['question'] = $q_text;
+                $q['optiona'] = $opt_a;
+                $q['optionb'] = $opt_b;
+                $q['optionc'] = $opt_c;
+                $q['optiond'] = $opt_d;
+                $q['optione'] = $opt_e;
+                $q['answer'] = $ans;
+                $q['solution'] = $sol;
+                $cleaned[] = $q;
+            }
+        }
+        return $cleaned;
     }
 
     private function parse_scribd_page_spans($raw, $pnum, $title, $badge)

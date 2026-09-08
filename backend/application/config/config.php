@@ -459,6 +459,11 @@ $config['csrf_cookie_name'] = 'csrf_cookie_name';
 $config['csrf_expire'] = 7200;
 $config['csrf_regenerate'] = TRUE;
 $config['csrf_exclude_uris'] = array(
+  'book-import.*',
+  'Book_Importer.*',
+  'book-import/preview',
+  'book-import/save',
+  'book-import',
   'checkOldPass',
   'Api.*+',
   'Table.*+',

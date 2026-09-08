@@ -10,7 +10,8 @@
     <style>
         .source-card {
             border-top: 4px solid #6777ef;
-            box-shadow: 0 4px 8px rgba(0,0,0,.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,.06);
+            border-radius: 8px;
         }
         .preview-box {
             max-height: 600px;
@@ -20,14 +21,27 @@
             border-left: 4px solid #3abaf4;
             margin-bottom: 15px;
             background: #fdfdff;
+            border-radius: 6px;
         }
         .solution-box {
             background-color: #f4f6f9;
             border-radius: 6px;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            color: #3e445b;
+            padding: 12px 16px;
+            font-size: 0.92rem;
+            color: #2c3246;
             border-left: 3px solid #28a745;
+            line-height: 1.6;
+        }
+        .method-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .tab-btn.active {
+            background-color: #6777ef !important;
+            color: #fff !important;
         }
     </style>
 </head>
@@ -49,46 +63,82 @@
                     </div>
 
                     <div class="section-body">
+                        <!-- Success Banner for Already Imported Books -->
+                        <div class="alert alert-success alert-has-icon shadow-sm mb-4">
+                            <div class="alert-icon"><em class="fas fa-check-circle"></em></div>
+                            <div class="alert-body">
+                                <div class="alert-title font-weight-bold">HMGS Soru Bankaları Sisteme Aktarıldı!</div>
+                                <strong>HMGS İdare Hukuku (238 Soru)</strong> ve <strong>HMGS Anayasa Hukuku (193 Soru)</strong> olmak üzere toplam <strong>431 adet soru</strong> ve detaylı kanuni çözümleri başarıyla veritabanına eklenmiştir. Bu soruları <em>Kategori 11 (Anayasa & İdare Hukuku)</em> altında görüntüleyebilir, testlerde ve düellolarda hemen kullanabilirsiniz.
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="card source-card">
-                                    <div class="card-header d-flex justify-content-between">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
                                         <h4><em class="fas fa-magic mr-2 text-primary"></em> Akıllı Kitap & PDF Analiz Motoru</h4>
-                                        <span class="badge badge-success"><em class="fas fa-check-circle mr-1"></em> Scribd & PDF Destekli</span>
+                                        <span class="badge badge-success"><em class="fas fa-shield-alt mr-1"></em> PDF, Scribd & HTML Destekli</span>
                                     </div>
                                     <div class="card-body">
-                                        <div class="alert alert-light border">
-                                            <em class="fas fa-info-circle text-primary mr-2"></em>
-                                            Bu sayfadan <strong>Scribd kitap linklerini</strong> (örn: <code>https://www.scribd.com/document/822952525/...</code>), doğrudan <strong>PDF web linklerini</strong> veya bilgisayarınızdaki bir <strong>PDF soru bankasını</strong> girerek tüm soruları, şıkları, doğru cevapları ve detaylı çözümleri otomatik olarak çıkarıp sisteme ekleyebilirsiniz.
-                                        </div>
+                                        <p class="text-muted mb-4">
+                                            İnternetteki veya bilgisayarınızdaki soru bankalarını, deneme sınavlarını ya da Scribd kitaplarını sisteme otomatik olarak aktarın. Sistem soruları, şıkları (A-E), doğru cevapları ve detaylı çözümleri tek tek tespit eder.
+                                        </p>
 
                                         <form id="importForm" enctype="multipart/form-data">
                                             <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
+                                            <!-- Method 1 & 2 Inputs -->
                                             <div class="row">
-                                                <div class="form-group col-md-8">
-                                                    <label class="font-weight-bold">Kitap / Soru Bankası URL Adresi (Scribd veya Doğrudan PDF):</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <div class="input-group-text"><em class="fas fa-link"></em></div>
-                                                        </div>
-                                                        <input type="url" name="url" id="doc_url" class="form-control" placeholder="https://www.scribd.com/document/... veya https://.../sorular.pdf">
-                                                    </div>
-                                                    <small class="form-text text-muted">Scribd doküman linki veya doğrudan internetteki PDF linki.</small>
+                                                <div class="form-group col-md-6">
+                                                    <label class="font-weight-bold d-flex justify-content-between">
+                                                        <span><em class="fas fa-file-upload text-success mr-1"></em> 1. Yöntem: Doğrudan PDF Dosyası Yükle</span>
+                                                        <span class="badge badge-success method-badge">Önerilen & En Hızlı</span>
+                                                    </label>
+                                                    <input type="file" name="pdf_file" id="pdf_file" class="form-control" accept=".pdf">
+                                                    <small class="form-text text-muted">Bilgisayarınızdaki PDF soru bankasını seçin. Tüm soru ve çözümler anında taranır.</small>
                                                 </div>
 
-                                                <div class="form-group col-md-4">
-                                                    <label class="font-weight-bold">VEYA Doğrudan PDF Dosyası Yükle:</label>
-                                                    <input type="file" name="pdf_file" id="pdf_file" class="form-control" accept=".pdf">
+                                                <div class="form-group col-md-6">
+                                                    <label class="font-weight-bold d-flex justify-content-between">
+                                                        <span><em class="fas fa-link text-primary mr-1"></em> 2. Yöntem: Kitap / PDF Web Linki</span>
+                                                        <span class="badge badge-info method-badge">Web Linki</span>
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text"><em class="fas fa-globe"></em></div>
+                                                        </div>
+                                                        <input type="url" name="url" id="doc_url" class="form-control" placeholder="https://.../sorular.pdf veya https://www.scribd.com/document/...">
+                                                    </div>
+                                                    <small class="form-text text-muted">Doğrudan PDF web adresi veya Scribd belge linki.</small>
                                                 </div>
                                             </div>
 
+                                            <!-- Method 3: Collapsible Scribd HTML Source Paste -->
+                                            <div class="form-group">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <a class="btn btn-outline-secondary btn-sm" data-toggle="collapse" href="#htmlSourceCollapse" role="button" aria-expanded="false" aria-controls="htmlSourceCollapse">
+                                                        <em class="fas fa-code mr-1"></em> 3. Yöntem: Scribd Sayfa Kaynağı (HTML) Yapıştır (Alternatif)
+                                                    </a>
+                                                    <small class="text-muted">Scribd bot koruması linki engellediğinde kullanılır.</small>
+                                                </div>
+                                                <div class="collapse mt-2" id="htmlSourceCollapse">
+                                                    <div class="card card-body bg-light border p-3">
+                                                        <label class="font-weight-bold text-dark mb-1">Scribd Sayfa Kaynağı (Ctrl+U):</label>
+                                                        <textarea name="html_source" id="html_source" rows="4" class="form-control" placeholder="Scribd dokümanını tarayıcınızda açıp klavyeden Ctrl+U ile sayfa kaynağını kopyalayın ve buraya yapıştırın..."></textarea>
+                                                        <small class="form-text text-muted mt-1">
+                                                            <em class="fas fa-info-circle text-primary"></em> Tarayıcınız Scribd bot korumasına takılmadığı için kaynak kodunu buraya yapıştırdığınızda tüm sayfalar Cloud CDN üzerinden en yüksek hızda ve eksiksiz indirilir.
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Category, Badge, Exam selection -->
                                             <div class="row">
                                                 <div class="form-group col-md-4">
                                                     <label class="font-weight-bold">Hedef Kategori:</label>
                                                     <select name="category_id" id="category_id" class="form-control select2">
                                                         <?php foreach ($categories as $cat) { ?>
-                                                            <option value="<?= $cat->id; ?>" <?= ($cat->id == 11 || $cat->id == 3) ? 'selected' : ''; ?>>
+                                                            <option value="<?= $cat->id; ?>" <?= ($cat->id == 11) ? 'selected' : ''; ?>>
                                                                 <?= $cat->id . ' - ' . $cat->category_name; ?>
                                                             </option>
                                                         <?php } ?>
@@ -111,13 +161,13 @@
                                                             </option>
                                                         <?php } ?>
                                                     </select>
-                                                    <small class="form-text text-muted">Seçilirse sorular doğrudan bu deneme sınavına da eklenir.</small>
+                                                    <small class="form-text text-muted">Seçilirse sorular bu deneme sınavına da bağlanır.</small>
                                                 </div>
                                             </div>
 
                                             <div class="form-group mt-2">
                                                 <button type="button" id="btnPreview" class="btn btn-primary btn-lg shadow-sm">
-                                                    <em class="fas fa-search mr-2"></em> Kitabı İndir, Analiz Et ve Önizle
+                                                    <em class="fas fa-search mr-2"></em> Kitabı / PDF'i Analiz Et ve Önizle
                                                 </button>
                                             </div>
                                         </form>
@@ -141,7 +191,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="alert alert-info mb-3">
-                                            <em class="fas fa-check-double mr-1"></em> Kitap içeriği çözümlendi! Aşağıda tespit edilen ilk sorular, şıkları, doğru cevapları ve detaylı kanuni çözümleri önizlenmektedir. <strong>"Tüm Soruları Veritabanına Aktar"</strong> butonuna basarak tüm soruları canlı sisteme kaydedebilirsiniz.
+                                            <em class="fas fa-check-double mr-1"></em> Kitap içeriği başarıyla çözümlendi! Aşağıda tespit edilen ilk sorular, şıkları, doğru cevapları ve detaylı kanuni çözümleri önizlenmektedir. <strong>"Tüm Soruları ve Çözümleri Veritabanına Aktar"</strong> butonuna basarak soruları canlı sisteme aktarabilirsiniz.
                                         </div>
 
                                         <div class="preview-box" id="questionsPreviewList">
@@ -167,12 +217,13 @@
 
                 var url = $('#doc_url').val().trim();
                 var file = $('#pdf_file')[0].files[0];
+                var htmlSource = $('#html_source').val().trim();
 
-                if (!url && !file) {
+                if (!url && !file && !htmlSource) {
                     Swal.fire({
                         icon: "warning",
                         title: "Eksik Bilgi",
-                        text: "Lütfen bir kitap/PDF linki girin veya bilgisayarınızdan PDF dosyası seçin."
+                        text: "Lütfen bir PDF dosyası seçin, link girin veya Scribd sayfa kaynağını yapıştırın."
                     });
                     return;
                 }
@@ -194,6 +245,46 @@
                     dataType: 'json',
                     success: function (res) {
                         btn.prop('disabled', false).html(originalHtml);
+
+                        // If Scribd Bot Challenge is triggered
+                        if (res.is_bot_challenge) {
+                            var docId = res.doc_id || '';
+                            var embedUrl = res.embed_url || ('https://www.scribd.com/embeds/' + docId + '/content');
+
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Scribd Bot Güvenlik Kalkanı",
+                                html: '<div class="text-left" style="font-size:0.95rem; line-height:1.6;">' +
+                                      '<p>Scribd, sunucu üzerinden doğrudan web bağlantılarını güvenlik duvarı (Bot Koruması) ile sınırlandırmaktadır.</p>' +
+                                      '<p class="font-weight-bold mb-2">Bu kitabı içeri aktarmak için 2 kolay yol mevcuttur:</p>' +
+                                      '<div class="p-2 mb-2 bg-light border rounded">' +
+                                      '<strong>1. Yöntem (En Hızlısı - PDF Yükleme):</strong><br>' +
+                                      'Kitabı PDF olarak indirip soldaki <em>"Doğrudan PDF Dosyası Yükle"</em> kısmından seçebilirsiniz.' +
+                                      '</div>' +
+                                      '<div class="p-2 bg-light border rounded">' +
+                                      '<strong>2. Yöntem (Sayfa Kaynağını Yapıştırma):</strong><br>' +
+                                      '<a href="' + embedUrl + '" target="_blank" class="btn btn-sm btn-info my-1"><em class="fas fa-external-link-alt mr-1"></em> Scribd Belgesini Yeni Sekmede Aç</a><br>' +
+                                      'Açılan sayfada <code>Ctrl+U</code> tuşlarına basarak tüm kaynak kodunu kopyalayın ve <em>"3. Yöntem: Scribd HTML Kaynağı"</em> kutusuna yapıştırın.' +
+                                      '</div>' +
+                                      '</div>',
+                                showCancelButton: true,
+                                confirmButtonText: '<em class="fas fa-code mr-1"></em> HTML Yapıştırma Kutusunu Aç',
+                                cancelButtonText: '<em class="fas fa-file-pdf mr-1"></em> PDF Olarak Yükleyeceğim',
+                                confirmButtonColor: '#6777ef',
+                                cancelButtonColor: '#28a745'
+                            }).then(function (result) {
+                                if (result.isConfirmed) {
+                                    $('#htmlSourceCollapse').collapse('show');
+                                    $('#html_source').focus();
+                                    $('html, body').animate({
+                                        scrollTop: $("#htmlSourceCollapse").offset().top - 40
+                                    }, 400);
+                                } else {
+                                    $('#pdf_file').click();
+                                }
+                            });
+                            return;
+                        }
 
                         if (res.error) {
                             Swal.fire({
@@ -227,7 +318,7 @@
 
                             if (q.solution && q.solution.trim() !== '') {
                                 listHtml += '<div class="solution-box mt-2">';
-                                listHtml += '<strong><em class="fas fa-lightbulb text-warning mr-1"></em> Detaylı Çözüm / Açıklama:</strong><br>';
+                                listHtml += '<strong><em class="fas fa-balance-scale text-success mr-1"></em> Detaylı Çözüm & Kanuni Açıklama:</strong><br>';
                                 listHtml += $('<div>').text(q.solution).html();
                                 listHtml += '</div>';
                             }
@@ -242,10 +333,14 @@
                     },
                     error: function (xhr, status, err) {
                         btn.prop('disabled', false).html(originalHtml);
+                        var errMsg = "Sunucu isteği işlerken bir hata oluştu (" + err + ").";
+                        if (xhr.status === 403) {
+                            errMsg = "Oturumunuz zaman aşımına uğramış veya CSRF doğrulaması yenilenmiş olabilir. Lütfen sayfayı yenileyip tekrar deneyin.";
+                        }
                         Swal.fire({
                             icon: "error",
                             title: "Bağlantı Hatası",
-                            text: "Sunucu isteği işlerken hata oluştu: " + err
+                            text: errMsg
                         });
                     }
                 });
@@ -257,7 +352,7 @@
 
                 Swal.fire({
                     title: "Soruları Aktarmak İstiyor musunuz?",
-                    text: "Analiz edilen tüm sorular ve çözümleri seçilen kategoriye eklenecektir.",
+                    text: "Analiz edilen tüm sorular ve kanuni çözümleri seçilen kategoriye eklenecektir.",
                     icon: "question",
                     showCancelButton: true,
                     confirmButtonColor: "#28a745",
