@@ -33,11 +33,34 @@ class Book_Importer extends CI_Controller
         $this->load->view('book_import', $data);
     }
 
+    private function json_response($data)
+    {
+        $data['csrf_token'] = $this->security->get_csrf_token_name();
+        $data['csrf_hash'] = $this->security->get_csrf_hash();
+        
+        $cleanData = $this->utf8ize($data);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($cleanData, JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE);
+        return;
+    }
+
+    private function utf8ize($mixed)
+    {
+        if (is_array($mixed)) {
+            foreach ($mixed as $key => $value) {
+                $mixed[$key] = $this->utf8ize($value);
+            }
+        } elseif (is_string($mixed)) {
+            return mb_convert_encoding($mixed, 'UTF-8', 'UTF-8');
+        }
+        return $mixed;
+    }
+
     public function preview()
     {
         if (!has_permissions('create', 'questions')) {
-            echo json_encode(['error' => true, 'message' => 'Yetkiniz bulunmamaktadır.']);
-            return;
+            return $this->json_response(['error' => true, 'message' => 'Yetkiniz bulunmamaktadır.']);
         }
 
         $url = trim($this->input->post('url') ?? '');
@@ -51,8 +74,7 @@ class Book_Importer extends CI_Controller
         if (!empty($html_source)) {
             $result = $this->parse_scribd_html_string($html_source, $badge);
             if ($result['error']) {
-                echo json_encode($result);
-                return;
+                return $this->json_response($result);
             }
             $this->session->set_userdata('book_import_cache', [
                 'questions' => $result['questions'],
@@ -63,27 +85,24 @@ class Book_Importer extends CI_Controller
                 'title' => $result['title']
             ]);
 
-            echo json_encode([
+            return $this->json_response([
                 'error' => false,
                 'title' => $result['title'],
                 'total' => count($result['questions']),
                 'preview' => array_slice($result['questions'], 0, 30),
                 'message' => count($result['questions']) . ' soru ve çözüm kaynak kodundan başarıyla analiz edildi.'
             ]);
-            return;
         }
 
         if (empty($url) && empty($_FILES['pdf_file']['name'])) {
-            echo json_encode(['error' => true, 'message' => 'Lütfen geçerli bir kitap linki (Scribd/PDF) girin veya PDF yükleyin.']);
-            return;
+            return $this->json_response(['error' => true, 'message' => 'Lütfen geçerli bir kitap linki (Scribd/PDF) girin veya PDF yükleyin.']);
         }
 
         // Handle Scribd URL
         if (!empty($url) && strpos($url, 'scribd.com') !== false) {
             $result = $this->parse_scribd_url($url, $badge);
             if ($result['error']) {
-                echo json_encode($result);
-                return;
+                return $this->json_response($result);
             }
             // Store preview in session for 1-click import
             $this->session->set_userdata('book_import_cache', [
@@ -95,14 +114,13 @@ class Book_Importer extends CI_Controller
                 'title' => $result['title']
             ]);
 
-            echo json_encode([
+            return $this->json_response([
                 'error' => false,
                 'title' => $result['title'],
                 'total' => count($result['questions']),
                 'preview' => array_slice($result['questions'], 0, 30),
                 'message' => count($result['questions']) . ' soru ve çözüm başarıyla analiz edildi.'
             ]);
-            return;
         }
 
         // Handle direct PDF URL or Upload
@@ -136,18 +154,16 @@ class Book_Importer extends CI_Controller
         @unlink($filePath);
 
         if ($result['error']) {
-            echo json_encode($result);
-            return;
+            return $this->json_response($result);
         }
 
         $result['title'] = $docTitle;
 
         if (empty($result['questions'])) {
-            echo json_encode([
+            return $this->json_response([
                 'error' => true,
                 'message' => 'PDF dosyasında soru veya şık formatı tespit edilemedi. Dosya taranmış fotokopi/görsel olabilir.'
             ]);
-            return;
         }
 
         $this->session->set_userdata('book_import_cache', [
@@ -159,7 +175,7 @@ class Book_Importer extends CI_Controller
             'title' => $result['title']
         ]);
 
-        echo json_encode([
+        return $this->json_response([
             'error' => false,
             'title' => $result['title'],
             'total' => count($result['questions']),
@@ -171,14 +187,12 @@ class Book_Importer extends CI_Controller
     public function save()
     {
         if (!has_permissions('create', 'questions')) {
-            echo json_encode(['error' => true, 'message' => 'Yetkiniz bulunmamaktadır.']);
-            return;
+            return $this->json_response(['error' => true, 'message' => 'Yetkiniz bulunmamaktadır.']);
         }
 
         $cached = $this->session->userdata('book_import_cache');
         if (empty($cached) || empty($cached['questions'])) {
-            echo json_encode(['error' => true, 'message' => 'Aktarılacak soru bulunamadı. Lütfen önce analiz yapınız.']);
-            return;
+            return $this->json_response(['error' => true, 'message' => 'Aktarılacak soru bulunamadı. Lütfen önce analiz yapınız.']);
         }
 
         $category_id = intval($this->input->post('category_id') ?? $cached['category_id']);
@@ -239,7 +253,7 @@ class Book_Importer extends CI_Controller
         // Clear cache
         $this->session->unset_userdata('book_import_cache');
 
-        echo json_encode([
+        return $this->json_response([
             'error' => false,
             'message' => "Toplam $inserted adet soru ve detaylı çözümü başarıyla veritabanına eklendi!",
             'redirect' => base_url('manage-questions')
@@ -584,8 +598,8 @@ class Book_Importer extends CI_Controller
 
     private function parse_generic_pdf($filePath, $badge)
     {
-        // Extract text via pdftotext with layout preserving geometry
-        $cmd = "pdftotext -layout " . escapeshellarg($filePath) . " -";
+        // Extract text via pdftotext with UTF-8 encoding and layout preserving geometry
+        $cmd = "pdftotext -enc UTF-8 -layout " . escapeshellarg($filePath) . " -";
         $text = shell_exec($cmd);
 
         // Check if digital text exists
@@ -676,9 +690,9 @@ class Book_Importer extends CI_Controller
                 $rightCol = [];
 
                 foreach ($pLines as $line) {
-                    // Check for wide whitespace gap separating columns
-                    if (preg_match('/\s{15,}/', substr($line, 15, 60), $wgm, PREG_OFFSET_CAPTURE)) {
-                        $splitPos = 15 + $wgm[0][1] + intval(strlen($wgm[0][0]) / 2);
+                    // Short line with two numbers e.g. '31.             33.'
+                    if (strlen($line) < 70 && preg_match('/\s{15,}/', substr($line, 20, 45), $sgm, PREG_OFFSET_CAPTURE)) {
+                        $splitPos = 20 + $sgm[0][1] + intval(strlen($sgm[0][0]) / 2);
                         $leftCol[] = rtrim(substr($line, 0, $splitPos));
                         $rightCol[] = rtrim(substr($line, $splitPos));
                         continue;

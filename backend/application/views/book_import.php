@@ -212,6 +212,12 @@
     </div>
 
     <script>
+        function updateCsrfTokens(tokenName, tokenHash) {
+            if (tokenName && tokenHash) {
+                $('input[name="' + tokenName + '"]').val(tokenHash);
+            }
+        }
+
         $(document).ready(function () {
             $('#btnPreview').on('click', function (e) {
                 e.preventDefault();
@@ -246,6 +252,10 @@
                     dataType: 'json',
                     success: function (res) {
                         btn.prop('disabled', false).html(originalHtml);
+
+                        if (res.csrf_token && res.csrf_hash) {
+                            updateCsrfTokens(res.csrf_token, res.csrf_hash);
+                        }
 
                         // If Scribd Bot Challenge is triggered
                         if (res.is_bot_challenge) {
@@ -360,9 +370,12 @@
                     },
                     error: function (xhr, status, err) {
                         btn.prop('disabled', false).html(originalHtml);
+                        if (xhr.responseJSON && xhr.responseJSON.csrf_token) {
+                            updateCsrfTokens(xhr.responseJSON.csrf_token, xhr.responseJSON.csrf_hash);
+                        }
                         var errMsg = "Sunucu isteği işlerken bir hata oluştu (" + err + ").";
                         if (xhr.status === 403) {
-                            errMsg = "Oturumunuz zaman aşımına uğramış veya CSRF doğrulaması yenilenmiş olabilir. Lütfen sayfayı yenileyip tekrar deneyin.";
+                            errMsg = "Oturumunuz zaman aşımına uğramış veya CSRF güvenlik doğrulaması yenilenmiş olabilir. Lütfen sayfayı yenileyip tekrar deneyin.";
                         }
                         Swal.fire({
                             icon: "error",
@@ -379,7 +392,7 @@
 
                 Swal.fire({
                     title: "Soruları Aktarmak İstiyor musunuz?",
-                    text: "Analiz edilen tüm sorular ve kanuni çözümleri seçilen kategoriye eklenecektir.",
+                    text: "Analiz edilen tüm sorular ve resmi çözümleri sisteme eklenecektir.",
                     icon: "question",
                     showCancelButton: true,
                     confirmButtonColor: "#28a745",
@@ -391,18 +404,25 @@
 
                     btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2"></span> Veritabanına Ekleniyor...');
 
+                    var csrfTokenName = '<?= $this->security->get_csrf_token_name(); ?>';
+                    var currentCsrfHash = $('input[name="' + csrfTokenName + '"]').val() || '<?= $this->security->get_csrf_hash(); ?>';
+
+                    var postData = {};
+                    postData[csrfTokenName] = currentCsrfHash;
+                    postData['category_id'] = $('#category_id').val();
+                    postData['exam_id'] = $('#exam_id').val();
+                    postData['badge'] = $('#badge').val();
+
                     $.ajax({
                         url: '<?= base_url("book-import/save"); ?>',
                         type: 'POST',
-                        data: {
-                            '<?= $this->security->get_csrf_token_name(); ?>': '<?= $this->security->get_csrf_hash(); ?>',
-                            'category_id': $('#category_id').val(),
-                            'exam_id': $('#exam_id').val(),
-                            'badge': $('#badge').val()
-                        },
+                        data: postData,
                         dataType: 'json',
                         success: function (res) {
                             btn.prop('disabled', false).html(originalHtml);
+                            if (res.csrf_token && res.csrf_hash) {
+                                updateCsrfTokens(res.csrf_token, res.csrf_hash);
+                            }
                             if (res.error) {
                                 Swal.fire({ icon: "error", title: "Hata", text: res.message });
                             } else {
@@ -413,6 +433,9 @@
                         },
                         error: function (xhr, status, err) {
                             btn.prop('disabled', false).html(originalHtml);
+                            if (xhr.responseJSON && xhr.responseJSON.csrf_token) {
+                                updateCsrfTokens(xhr.responseJSON.csrf_token, xhr.responseJSON.csrf_hash);
+                            }
                             Swal.fire({ icon: "error", title: "Hata", text: "Kayıt işlemi sırasında sunucu hatası oluştu." });
                         }
                     });
