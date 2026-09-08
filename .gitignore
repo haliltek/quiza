@@ -50,3 +50,6 @@ backend/assets/MathJax/
 
 # Temporary / Scratch Cache
 scratch/
+scratch_osym/*.pdf
+scratch_osym/*.png
+
