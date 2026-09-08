@@ -95,6 +95,9 @@
                         <?php if (has_permissions('read', 'import_question')) { ?>
                             <li><a class="nav-link" href="<?= base_url(); ?>import-questions"> <?= lang('import_questions'); ?></a></li>
                         <?php } ?>
+                        <?php if (has_permissions('read', 'questions')) { ?>
+                            <li><a class="nav-link" href="<?= base_url(); ?>book-import"><em class="fas fa-file-pdf text-danger mr-1"></em> <span>PDF & Kitap İçe Aktar</span></a></li>
+                        <?php } ?>
                         <?php if (has_permissions('read', 'question_report')) { ?>
                             <li><a class="nav-link" href="<?= base_url(); ?>question-reports"> <?= lang('question_reports'); ?></a></li>
                         <?php } ?>

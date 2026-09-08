@@ -113,8 +113,10 @@ $route['get_daily_quiz'] = 'Questions/get_daily_quiz';
 $route['add_daily_quiz'] = 'Questions/add_daily_quiz';
 $route['question-reports'] = 'Questions/question_reports';
 $route['question-reports/(:num)'] = 'Questions/edit_question_reports/$1';
-$route['delete_question_report'] = 'Questions/delete_question_report';
 $route['import-questions'] = 'Questions/import_questions';
+$route['book-import'] = 'Book_Importer';
+$route['book-import/preview'] = 'Book_Importer/preview';
+$route['book-import/save'] = 'Book_Importer/save';
 
 $route['contest'] = 'Contest';
 $route['delete_contest'] = 'Contest/delete_contest';
