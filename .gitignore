@@ -28,6 +28,7 @@ elitequiz-2391/
 *.apk
 *.aab
 *.dill
+backend/assets/MathJax/
 
 # Flutter & Dart Build Artifacts
 **/build/
