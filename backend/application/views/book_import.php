@@ -86,7 +86,7 @@
                                             <div class="row">
                                                 <div class="form-group col-md-4">
                                                     <label class="font-weight-bold">Hedef Kategori:</label>
-                                                    <select name="category_id" id="category_id" class="form-control select2" required>
+                                                    <select name="category_id" id="category_id" class="form-control select2">
                                                         <?php foreach ($categories as $cat) { ?>
                                                             <option value="<?= $cat->id; ?>" <?= ($cat->id == 11 || $cat->id == 3) ? 'selected' : ''; ?>>
                                                                 <?= $cat->id . ' - ' . $cat->category_name; ?>
@@ -116,7 +116,7 @@
                                             </div>
 
                                             <div class="form-group mt-2">
-                                                <button type="submit" id="btnPreview" class="btn btn-primary btn-lg shadow-sm">
+                                                <button type="button" id="btnPreview" class="btn btn-primary btn-lg shadow-sm">
                                                     <em class="fas fa-search mr-2"></em> Kitabı İndir, Analiz Et ve Önizle
                                                 </button>
                                             </div>
@@ -162,18 +162,23 @@
 
     <script>
         $(document).ready(function () {
-            $('#importForm').on('submit', function (e) {
+            $('#btnPreview').on('click', function (e) {
                 e.preventDefault();
 
                 var url = $('#doc_url').val().trim();
                 var file = $('#pdf_file')[0].files[0];
 
                 if (!url && !file) {
-                    swal("Uyarı", "Lütfen bir Scribd/PDF linki girin veya PDF dosyası yükleyin.", "warning");
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Eksik Bilgi",
+                        text: "Lütfen bir kitap/PDF linki girin veya bilgisayarınızdan PDF dosyası seçin."
+                    });
                     return;
                 }
 
-                var formData = new FormData(this);
+                var formElement = document.getElementById('importForm');
+                var formData = new FormData(formElement);
                 var btn = $('#btnPreview');
                 var originalHtml = btn.html();
 
@@ -191,7 +196,11 @@
                         btn.prop('disabled', false).html(originalHtml);
 
                         if (res.error) {
-                            swal("Hata", res.message, "error");
+                            Swal.fire({
+                                icon: "error",
+                                title: "Analiz Edilemedi",
+                                text: res.message
+                            });
                             return;
                         }
 
@@ -233,7 +242,11 @@
                     },
                     error: function (xhr, status, err) {
                         btn.prop('disabled', false).html(originalHtml);
-                        swal("Bağlantı Hatası", "Sunucu isteği işlerken zaman aşımına uğradı veya bir hata oluştu: " + err, "error");
+                        Swal.fire({
+                            icon: "error",
+                            title: "Bağlantı Hatası",
+                            text: "Sunucu isteği işlerken hata oluştu: " + err
+                        });
                     }
                 });
             });
@@ -242,14 +255,17 @@
                 var btn = $(this);
                 var originalHtml = btn.html();
 
-                swal({
+                Swal.fire({
                     title: "Soruları Aktarmak İstiyor musunuz?",
                     text: "Analiz edilen tüm sorular ve çözümleri seçilen kategoriye eklenecektir.",
-                    icon: "info",
-                    buttons: ["İptal", "Evet, Veritabanına Ekle"],
-                    dangerMode: false,
-                }).then(function (confirm) {
-                    if (!confirm) return;
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#28a745",
+                    cancelButtonColor: "#6c757d",
+                    confirmButtonText: "Evet, Veritabanına Ekle",
+                    cancelButtonText: "İptal"
+                }).then(function (result) {
+                    if (!result.isConfirmed) return;
 
                     btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2"></span> Veritabanına Ekleniyor...');
 
@@ -266,16 +282,16 @@
                         success: function (res) {
                             btn.prop('disabled', false).html(originalHtml);
                             if (res.error) {
-                                swal("Hata", res.message, "error");
+                                Swal.fire({ icon: "error", title: "Hata", text: res.message });
                             } else {
-                                swal("Başarılı!", res.message, "success").then(function () {
+                                Swal.fire({ icon: "success", title: "Başarılı!", text: res.message }).then(function () {
                                     window.location.href = res.redirect;
                                 });
                             }
                         },
                         error: function (xhr, status, err) {
                             btn.prop('disabled', false).html(originalHtml);
-                            swal("Hata", "Kayıt işlemi sırasında sunucu hatası oluştu.", "error");
+                            Swal.fire({ icon: "error", title: "Hata", text: "Kayıt işlemi sırasında sunucu hatası oluştu." });
                         }
                     });
                 });
