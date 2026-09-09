@@ -1,0 +1,1354 @@
+[
+  {
+    "subcat_id": 1,
+    "language_id": 52,
+    "category_id": 1,
+    "category_name": "Tarih (KPSS Lisans)",
+    "subcategory_name": "İslamiyet Öncesi Türk Tarihi",
+    "slug": "islamiyet-oncesi-turk-tarihi"
+  },
+  {
+    "subcat_id": 2,
+    "language_id": 52,
+    "category_id": 1,
+    "category_name": "Tarih (KPSS Lisans)",
+    "subcategory_name": "İlk Türk-İslam Devletleri",
+    "slug": "ilk-turk-islam-devletleri"
+  },
+  {
+    "subcat_id": 3,
+    "language_id": 52,
+    "category_id": 1,
+    "category_name": "Tarih (KPSS Lisans)",
+    "subcategory_name": "Osmanlı Devleti Kuruluş & Yükselme",
+    "slug": "osmanli-kurulus-yukselme"
+  },
+  {
+    "subcat_id": 4,
+    "language_id": 52,
+    "category_id": 1,
+    "category_name": "Tarih (KPSS Lisans)",
+    "subcategory_name": "Osmanlı Kültür ve Medeniyeti",
+    "slug": "osmanli-kultur-medeniyet"
+  },
+  {
+    "subcat_id": 5,
+    "language_id": 52,
+    "category_id": 1,
+    "category_name": "Tarih (KPSS Lisans)",
+    "subcategory_name": "Kurtuluş Savaşı ve Cepheler",
+    "slug": "kurtulus-savasi-cepheler"
+  },
+  {
+    "subcat_id": 6,
+    "language_id": 52,
+    "category_id": 1,
+    "category_name": "Tarih (KPSS Lisans)",
+    "subcategory_name": "Atatürk İlkeleri ve İnkılap Tarihi",
+    "slug": "ataturk-ilkeleri-inkilap-tarihi"
+  },
+  {
+    "subcat_id": 7,
+    "language_id": 52,
+    "category_id": 1,
+    "category_name": "Tarih (KPSS Lisans)",
+    "subcategory_name": "Çağdaş Türk ve Dünya Tarihi",
+    "slug": "cagdas-turk-dunya-tarihi"
+  },
+  {
+    "subcat_id": 8,
+    "language_id": 52,
+    "category_id": 2,
+    "category_name": "Coğrafya (KPSS Lisans)",
+    "subcategory_name": "Türkiye Coğrafi Konumu ve Etkileri",
+    "slug": "turkiye-cografi-konumu"
+  },
+  {
+    "subcat_id": 9,
+    "language_id": 52,
+    "category_id": 2,
+    "category_name": "Coğrafya (KPSS Lisans)",
+    "subcategory_name": "Türkiye Yer Şekilleri, Dağlar ve Platolar",
+    "slug": "turkiye-yer-sekilleri"
+  },
+  {
+    "subcat_id": 10,
+    "language_id": 52,
+    "category_id": 2,
+    "category_name": "Coğrafya (KPSS Lisans)",
+    "subcategory_name": "Türkiye İklimi ve Bitki Örtüsü",
+    "slug": "turkiye-iklim-bitki-ortusu"
+  },
+  {
+    "subcat_id": 11,
+    "language_id": 52,
+    "category_id": 2,
+    "category_name": "Coğrafya (KPSS Lisans)",
+    "subcategory_name": "Türkiye Nüfus ve Yerleşme",
+    "slug": "turkiye-nufus-yerlesme"
+  },
+  {
+    "subcat_id": 12,
+    "language_id": 52,
+    "category_id": 2,
+    "category_name": "Coğrafya (KPSS Lisans)",
+    "subcategory_name": "Türkiye Tarım, Hayvancılık ve Madenler",
+    "slug": "turkiye-tarim-madenler"
+  },
+  {
+    "subcat_id": 13,
+    "language_id": 52,
+    "category_id": 3,
+    "category_name": "Vatandaşlık & Anayasa (KPSS Lisans)",
+    "subcategory_name": "Temel Hukuk Kavramları",
+    "slug": "temel-hukuk-kavramlari"
+  },
+  {
+    "subcat_id": 14,
+    "language_id": 52,
+    "category_id": 3,
+    "category_name": "Vatandaşlık & Anayasa (KPSS Lisans)",
+    "subcategory_name": "1982 Anayasası ve Temel Esaslar",
+    "slug": "1982-anayasasi-temel-esaslar"
+  },
+  {
+    "subcat_id": 15,
+    "language_id": 52,
+    "category_id": 3,
+    "category_name": "Vatandaşlık & Anayasa (KPSS Lisans)",
+    "subcategory_name": "Yasama, Yürütme ve Yargı Organları",
+    "slug": "yasama-yurutme-yargi"
+  },
+  {
+    "subcat_id": 16,
+    "language_id": 52,
+    "category_id": 3,
+    "category_name": "Vatandaşlık & Anayasa (KPSS Lisans)",
+    "subcategory_name": "İdare Hukuku ve Türkiye İdari Teşkilatı",
+    "slug": "idare-hukuku-idari-teskilat"
+  },
+  {
+    "subcat_id": 17,
+    "language_id": 52,
+    "category_id": 3,
+    "category_name": "Vatandaşlık & Anayasa (KPSS Lisans)",
+    "subcategory_name": "Güncel Bilgiler ve Uluslararası Kuruluşlar",
+    "slug": "guncel-bilgiler-uluslararasi"
+  },
+  {
+    "subcat_id": 18,
+    "language_id": 52,
+    "category_id": 4,
+    "category_name": "Türkçe (KPSS Lisans)",
+    "subcategory_name": "Sözcük ve Cümlede Anlam",
+    "slug": "sozcuk-ve-cumlede-anlam"
+  },
+  {
+    "subcat_id": 19,
+    "language_id": 52,
+    "category_id": 4,
+    "category_name": "Türkçe (KPSS Lisans)",
+    "subcategory_name": "Paragrafta Anlam ve Ana Düşünce",
+    "slug": "paragrafta-anlam"
+  },
+  {
+    "subcat_id": 20,
+    "language_id": 52,
+    "category_id": 4,
+    "category_name": "Türkçe (KPSS Lisans)",
+    "subcategory_name": "Dil Bilgisi ve Cümlenin Ögeleri",
+    "slug": "dil-bilgisi-ogeler"
+  },
+  {
+    "subcat_id": 21,
+    "language_id": 52,
+    "category_id": 4,
+    "category_name": "Türkçe (KPSS Lisans)",
+    "subcategory_name": "Yazım Kuralları ve Noktalama İşaretleri",
+    "slug": "yazim-noktalama"
+  },
+  {
+    "subcat_id": 22,
+    "language_id": 52,
+    "category_id": 4,
+    "category_name": "Türkçe (KPSS Lisans)",
+    "subcategory_name": "Sözel Mantık ve Muhakeme",
+    "slug": "sozel-mantik"
+  },
+  {
+    "subcat_id": 87,
+    "language_id": 52,
+    "category_id": 5,
+    "category_name": "Matematik & Sayısal Mantık",
+    "subcategory_name": "Temel Kavramlar & DÃ¶rt Ä°ÅŸlem",
+    "slug": "kpss-mat-temel-kavramlar"
+  },
+  {
+    "subcat_id": 88,
+    "language_id": 52,
+    "category_id": 5,
+    "category_name": "Matematik & Sayısal Mantık",
+    "subcategory_name": "SayÄ± BasamaklarÄ± & BÃ¶lÃ¼nebilme",
+    "slug": "kpss-mat-sayi-basamaklari"
+  },
+  {
+    "subcat_id": 89,
+    "language_id": 52,
+    "category_id": 5,
+    "category_name": "Matematik & Sayısal Mantık",
+    "subcategory_name": "Rasyonel & OndalÄ±k SayÄ±lar",
+    "slug": "kpss-mat-rasyonel-sayilar"
+  },
+  {
+    "subcat_id": 90,
+    "language_id": 52,
+    "category_id": 5,
+    "category_name": "Matematik & Sayısal Mantık",
+    "subcategory_name": "ÃœslÃ¼ & KÃ¶klÃ¼ SayÄ±lar",
+    "slug": "kpss-mat-uslu-koklu-sayilar"
+  },
+  {
+    "subcat_id": 91,
+    "language_id": 52,
+    "category_id": 5,
+    "category_name": "Matematik & Sayısal Mantık",
+    "subcategory_name": "Problemler (YaÅŸ, HÄ±z, Kar-Zarar)",
+    "slug": "kpss-mat-problemler"
+  },
+  {
+    "subcat_id": 92,
+    "language_id": 52,
+    "category_id": 5,
+    "category_name": "Matematik & Sayısal Mantık",
+    "subcategory_name": "KÃ¼meler, MantÄ±k & OlasÄ±lÄ±k",
+    "slug": "kpss-mat-kumeler-olasilik"
+  },
+  {
+    "subcat_id": 93,
+    "language_id": 52,
+    "category_id": 5,
+    "category_name": "Matematik & Sayısal Mantık",
+    "subcategory_name": "Geometri & SayÄ±sal MantÄ±k",
+    "slug": "kpss-mat-geometri-sayisal-mantik"
+  },
+  {
+    "subcat_id": 25,
+    "language_id": 52,
+    "category_id": 16,
+    "category_name": "KPSS Tarih Hap Bilgiler",
+    "subcategory_name": "İlk Türk Devletleri ve Teşkilat",
+    "slug": "fnl-ilk-turk-devletleri"
+  },
+  {
+    "subcat_id": 26,
+    "language_id": 52,
+    "category_id": 16,
+    "category_name": "KPSS Tarih Hap Bilgiler",
+    "subcategory_name": "Osmanlı Önemli Antlaşmalar",
+    "slug": "fnl-osmanli-antlasmalar"
+  },
+  {
+    "subcat_id": 40,
+    "language_id": 52,
+    "category_id": 16,
+    "category_name": "KPSS Tarih Hap Bilgiler",
+    "subcategory_name": "İlk Türk Devletleri ve Teşkilat",
+    "slug": "fnl-ilk-turk-devletleri"
+  },
+  {
+    "subcat_id": 41,
+    "language_id": 52,
+    "category_id": 16,
+    "category_name": "KPSS Tarih Hap Bilgiler",
+    "subcategory_name": "Osmanlı Önemli Antlaşmalar",
+    "slug": "fnl-osmanli-antlasmalar"
+  },
+  {
+    "subcat_id": 27,
+    "language_id": 52,
+    "category_id": 17,
+    "category_name": "KPSS Coğrafya Şifreleri",
+    "subcategory_name": "Türkiye Dağları ve Gölleri",
+    "slug": "fnl-turkiye-daglari"
+  },
+  {
+    "subcat_id": 42,
+    "language_id": 52,
+    "category_id": 17,
+    "category_name": "KPSS Coğrafya Şifreleri",
+    "subcategory_name": "Türkiye Dağları ve Gölleri",
+    "slug": "fnl-turkiye-daglari"
+  },
+  {
+    "subcat_id": 28,
+    "language_id": 52,
+    "category_id": 18,
+    "category_name": "KPSS Vatandaşlık Notları",
+    "subcategory_name": "1982 Anayasası Temel Maddeler",
+    "slug": "fnl-1982-anayasa"
+  },
+  {
+    "subcat_id": 43,
+    "language_id": 52,
+    "category_id": 18,
+    "category_name": "KPSS Vatandaşlık Notları",
+    "subcategory_name": "1982 Anayasası Temel Maddeler",
+    "slug": "fnl-1982-anayasa"
+  },
+  {
+    "subcat_id": 29,
+    "language_id": 52,
+    "category_id": 19,
+    "category_name": "KPSS Tarih Kavramları",
+    "subcategory_name": "Eski Türk ve Osmanlı Terimleri",
+    "slug": "gtw-eski-turk-osmanli"
+  },
+  {
+    "subcat_id": 44,
+    "language_id": 52,
+    "category_id": 19,
+    "category_name": "KPSS Tarih Kavramları",
+    "subcategory_name": "Eski Türk ve Osmanlı Terimleri",
+    "slug": "gtw-eski-turk-osmanli"
+  },
+  {
+    "subcat_id": 30,
+    "language_id": 52,
+    "category_id": 20,
+    "category_name": "KPSS Coğrafya Terimleri",
+    "subcategory_name": "Yeryüzü Şekilleri ve İklim Terimleri",
+    "slug": "gtw-yeryuzu-sekilleri"
+  },
+  {
+    "subcat_id": 45,
+    "language_id": 52,
+    "category_id": 20,
+    "category_name": "KPSS Coğrafya Terimleri",
+    "subcategory_name": "Yeryüzü Şekilleri ve İklim Terimleri",
+    "slug": "gtw-yeryuzu-sekilleri"
+  },
+  {
+    "subcat_id": 31,
+    "language_id": 52,
+    "category_id": 21,
+    "category_name": "KPSS Hukuk ve Anayasa Terimleri",
+    "subcategory_name": "Temel Hukuk ve Anayasa Kavramları",
+    "slug": "gtw-temel-hukuk"
+  },
+  {
+    "subcat_id": 46,
+    "language_id": 52,
+    "category_id": 21,
+    "category_name": "KPSS Hukuk ve Anayasa Terimleri",
+    "subcategory_name": "Temel Hukuk ve Anayasa Kavramları",
+    "slug": "gtw-temel-hukuk"
+  },
+  {
+    "subcat_id": 32,
+    "language_id": 52,
+    "category_id": 22,
+    "category_name": "KPSS Temel Matematik",
+    "subcategory_name": "Sayılar ve Dört İşlem",
+    "slug": "mq-sayilar-dort-islem"
+  },
+  {
+    "subcat_id": 33,
+    "language_id": 52,
+    "category_id": 22,
+    "category_name": "KPSS Temel Matematik",
+    "subcategory_name": "Rasyonel ve Ondalık Sayılar",
+    "slug": "mq-rasyonel-sayilar"
+  },
+  {
+    "subcat_id": 47,
+    "language_id": 52,
+    "category_id": 22,
+    "category_name": "KPSS Temel Matematik",
+    "subcategory_name": "Sayılar ve Dört İşlem",
+    "slug": "mq-sayilar-dort-islem"
+  },
+  {
+    "subcat_id": 48,
+    "language_id": 52,
+    "category_id": 22,
+    "category_name": "KPSS Temel Matematik",
+    "subcategory_name": "Rasyonel ve Ondalık Sayılar",
+    "slug": "mq-rasyonel-sayilar"
+  },
+  {
+    "subcat_id": 34,
+    "language_id": 52,
+    "category_id": 23,
+    "category_name": "KPSS Sayısal Mantık & Problemler",
+    "subcategory_name": "Yaş ve Yüzde Problemleri",
+    "slug": "mq-yas-yuzde-problemleri"
+  },
+  {
+    "subcat_id": 35,
+    "language_id": 52,
+    "category_id": 23,
+    "category_name": "KPSS Sayısal Mantık & Problemler",
+    "subcategory_name": "Hız ve Kar-Zarar Problemleri",
+    "slug": "mq-hiz-kar-zarar"
+  },
+  {
+    "subcat_id": 49,
+    "language_id": 52,
+    "category_id": 23,
+    "category_name": "KPSS Sayısal Mantık & Problemler",
+    "subcategory_name": "Yaş ve Yüzde Problemleri",
+    "slug": "mq-yas-yuzde-problemleri"
+  },
+  {
+    "subcat_id": 50,
+    "language_id": 52,
+    "category_id": 23,
+    "category_name": "KPSS Sayısal Mantık & Problemler",
+    "subcategory_name": "Hız ve Kar-Zarar Problemleri",
+    "slug": "mq-hiz-kar-zarar"
+  },
+  {
+    "subcat_id": 36,
+    "language_id": 52,
+    "category_id": 24,
+    "category_name": "KPSS Tarih Eşleştirmeleri",
+    "subcategory_name": "Savaşlar ve Tarihleri",
+    "slug": "mm-savaslar-tarihleri"
+  },
+  {
+    "subcat_id": 37,
+    "language_id": 52,
+    "category_id": 24,
+    "category_name": "KPSS Tarih Eşleştirmeleri",
+    "subcategory_name": "Hükümdarlar ve Olaylar",
+    "slug": "mm-hukumdar-olaylar"
+  },
+  {
+    "subcat_id": 51,
+    "language_id": 52,
+    "category_id": 24,
+    "category_name": "KPSS Tarih Eşleştirmeleri",
+    "subcategory_name": "Savaşlar ve Tarihleri",
+    "slug": "mm-savaslar-tarihleri"
+  },
+  {
+    "subcat_id": 52,
+    "language_id": 52,
+    "category_id": 24,
+    "category_name": "KPSS Tarih Eşleştirmeleri",
+    "subcategory_name": "Hükümdarlar ve Olaylar",
+    "slug": "mm-hukumdar-olaylar"
+  },
+  {
+    "subcat_id": 38,
+    "language_id": 52,
+    "category_id": 25,
+    "category_name": "KPSS Coğrafya Eşleştirmeleri",
+    "subcategory_name": "Dağlar ve Bulunduğu Bölgeler",
+    "slug": "mm-daglar-bolgeler"
+  },
+  {
+    "subcat_id": 53,
+    "language_id": 52,
+    "category_id": 25,
+    "category_name": "KPSS Coğrafya Eşleştirmeleri",
+    "subcategory_name": "Dağlar ve Bulunduğu Bölgeler",
+    "slug": "mm-daglar-bolgeler"
+  },
+  {
+    "subcat_id": 39,
+    "language_id": 52,
+    "category_id": 26,
+    "category_name": "KPSS Genel Kültür Eşleştirmeleri",
+    "subcategory_name": "Uluslararası Örgütler ve Merkezleri",
+    "slug": "mm-orgutler-merkezleri"
+  },
+  {
+    "subcat_id": 54,
+    "language_id": 52,
+    "category_id": 26,
+    "category_name": "KPSS Genel Kültür Eşleştirmeleri",
+    "subcategory_name": "Uluslararası Örgütler ve Merkezleri",
+    "slug": "mm-orgutler-merkezleri"
+  },
+  {
+    "subcat_id": 55,
+    "language_id": 57,
+    "category_id": 39,
+    "category_name": "Türkçe (KPSS Önlisans)",
+    "subcategory_name": "Sözcük ve Cümlede Anlam",
+    "slug": "onlisans-tr-1"
+  },
+  {
+    "subcat_id": 56,
+    "language_id": 57,
+    "category_id": 39,
+    "category_name": "Türkçe (KPSS Önlisans)",
+    "subcategory_name": "Paragraf & Anlatım Teknikleri",
+    "slug": "onlisans-tr-2"
+  },
+  {
+    "subcat_id": 57,
+    "language_id": 57,
+    "category_id": 39,
+    "category_name": "Türkçe (KPSS Önlisans)",
+    "subcategory_name": "Dil Bilgisi & Yazım Kuralları",
+    "slug": "onlisans-tr-3"
+  },
+  {
+    "subcat_id": 83,
+    "language_id": 57,
+    "category_id": 40,
+    "category_name": "Matematik & Mantık (KPSS Önlisans)",
+    "subcategory_name": "Temel Matematik & SayÄ±lar",
+    "slug": "onl-mat-1"
+  },
+  {
+    "subcat_id": 84,
+    "language_id": 57,
+    "category_id": 40,
+    "category_name": "Matematik & Mantık (KPSS Önlisans)",
+    "subcategory_name": "Problemler & SayÄ±sal MantÄ±k",
+    "slug": "onl-mat-2"
+  },
+  {
+    "subcat_id": 58,
+    "language_id": 57,
+    "category_id": 41,
+    "category_name": "Tarih (KPSS Önlisans)",
+    "subcategory_name": "İlk Türk Devletleri",
+    "slug": "onlisans-tar-1"
+  },
+  {
+    "subcat_id": 59,
+    "language_id": 57,
+    "category_id": 41,
+    "category_name": "Tarih (KPSS Önlisans)",
+    "subcategory_name": "Osmanlı Tarihi",
+    "slug": "onlisans-tar-2"
+  },
+  {
+    "subcat_id": 60,
+    "language_id": 57,
+    "category_id": 41,
+    "category_name": "Tarih (KPSS Önlisans)",
+    "subcategory_name": "Kurtuluş Savaşı ve İnkılap Tarihi",
+    "slug": "onlisans-tar-3"
+  },
+  {
+    "subcat_id": 61,
+    "language_id": 57,
+    "category_id": 41,
+    "category_name": "Tarih (KPSS Önlisans)",
+    "subcategory_name": "Çağdaş Türk ve Dünya Tarihi",
+    "slug": "onlisans-tar-4"
+  },
+  {
+    "subcat_id": 62,
+    "language_id": 57,
+    "category_id": 42,
+    "category_name": "Coğrafya (KPSS Önlisans)",
+    "subcategory_name": "Türkiye Fiziki Coğrafyası",
+    "slug": "onlisans-cog-1"
+  },
+  {
+    "subcat_id": 63,
+    "language_id": 57,
+    "category_id": 42,
+    "category_name": "Coğrafya (KPSS Önlisans)",
+    "subcategory_name": "Türkiye Beşeri ve Ekonomik Coğrafyası",
+    "slug": "onlisans-cog-2"
+  },
+  {
+    "subcat_id": 64,
+    "language_id": 57,
+    "category_id": 43,
+    "category_name": "Vatandaşlık & Anayasa (KPSS Önlisans)",
+    "subcategory_name": "Temel Hukuk Kavramları",
+    "slug": "onlisans-vat-1"
+  },
+  {
+    "subcat_id": 65,
+    "language_id": 57,
+    "category_id": 43,
+    "category_name": "Vatandaşlık & Anayasa (KPSS Önlisans)",
+    "subcategory_name": "1982 Anayasası & Devlet Organları",
+    "slug": "onlisans-vat-2"
+  },
+  {
+    "subcat_id": 66,
+    "language_id": 57,
+    "category_id": 43,
+    "category_name": "Vatandaşlık & Anayasa (KPSS Önlisans)",
+    "subcategory_name": "İdare Hukuku & Güncel Bilgiler",
+    "slug": "onlisans-vat-3"
+  },
+  {
+    "subcat_id": 76,
+    "language_id": 58,
+    "category_id": 49,
+    "category_name": "Hukuk (KPSS A Grubu)",
+    "subcategory_name": "Anayasa ve İdare Hukuku",
+    "slug": "a-hukuk-1"
+  },
+  {
+    "subcat_id": 77,
+    "language_id": 58,
+    "category_id": 49,
+    "category_name": "Hukuk (KPSS A Grubu)",
+    "subcategory_name": "Ceza ve Ceza Muhakemesi Hukuku",
+    "slug": "a-hukuk-2"
+  },
+  {
+    "subcat_id": 78,
+    "language_id": 58,
+    "category_id": 49,
+    "category_name": "Hukuk (KPSS A Grubu)",
+    "subcategory_name": "Medeni ve Borçlar Hukuku",
+    "slug": "a-hukuk-3"
+  },
+  {
+    "subcat_id": 79,
+    "language_id": 58,
+    "category_id": 50,
+    "category_name": "İktisat (KPSS A Grubu)",
+    "subcategory_name": "Mikro ve Makro İktisat",
+    "slug": "a-iktisat-1"
+  },
+  {
+    "subcat_id": 80,
+    "language_id": 58,
+    "category_id": 50,
+    "category_name": "İktisat (KPSS A Grubu)",
+    "subcategory_name": "Para, Banka ve Türkiye Ekonomisi",
+    "slug": "a-iktisat-2"
+  },
+  {
+    "subcat_id": 81,
+    "language_id": 58,
+    "category_id": 51,
+    "category_name": "Maliye (KPSS A Grubu)",
+    "subcategory_name": "Kamu Maliyesi ve Bütçe",
+    "slug": "a-maliye-1"
+  },
+  {
+    "subcat_id": 82,
+    "language_id": 58,
+    "category_id": 51,
+    "category_name": "Maliye (KPSS A Grubu)",
+    "subcategory_name": "Vergi Hukuku ve Türk Vergi Sistemi",
+    "slug": "a-maliye-2"
+  },
+  {
+    "subcat_id": 160,
+    "language_id": 58,
+    "category_id": 52,
+    "category_name": "Kamu Yönetimi (KPSS A Grubu)",
+    "subcategory_name": "Siyaset Bilimi ve Yönetim Bilimi",
+    "slug": "a-kamu-siyaset-yonetim"
+  },
+  {
+    "subcat_id": 161,
+    "language_id": 58,
+    "category_id": 52,
+    "category_name": "Kamu Yönetimi (KPSS A Grubu)",
+    "subcategory_name": "Türkiye İdare Tarihi ve Yerel Yönetimler",
+    "slug": "a-kamu-idare-tarihi"
+  },
+  {
+    "subcat_id": 162,
+    "language_id": 58,
+    "category_id": 53,
+    "category_name": "Muhasebe (KPSS A Grubu)",
+    "subcategory_name": "Genel Muhasebe & Finansal Tablolar",
+    "slug": "a-muhasebe-genel"
+  },
+  {
+    "subcat_id": 163,
+    "language_id": 58,
+    "category_id": 53,
+    "category_name": "Muhasebe (KPSS A Grubu)",
+    "subcategory_name": "Maliyet Muhasebesi ve Şirketler Muhasebesi",
+    "slug": "a-muhasebe-maliyet"
+  },
+  {
+    "subcat_id": 121,
+    "language_id": 59,
+    "category_id": 11,
+    "category_name": "Anayasa & İdare Hukuku (Hakimlik)",
+    "subcategory_name": "Anayasa Hukuku & Bireysel Başvuru",
+    "slug": "hakimlik-anayasa"
+  },
+  {
+    "subcat_id": 122,
+    "language_id": 59,
+    "category_id": 11,
+    "category_name": "Anayasa & İdare Hukuku (Hakimlik)",
+    "subcategory_name": "İdare Hukuku ve İdari Teşkilat",
+    "slug": "hakimlik-idare-hukuku"
+  },
+  {
+    "subcat_id": 123,
+    "language_id": 59,
+    "category_id": 12,
+    "category_name": "Ceza Genel & Özel Hukuku (Hakimlik)",
+    "subcategory_name": "Ceza Hukuku Genel Hükümler",
+    "slug": "hakimlik-ceza-genel"
+  },
+  {
+    "subcat_id": 124,
+    "language_id": 59,
+    "category_id": 12,
+    "category_name": "Ceza Genel & Özel Hukuku (Hakimlik)",
+    "subcategory_name": "Ceza Hukuku Özel Hükümler",
+    "slug": "hakimlik-ceza-ozel"
+  },
+  {
+    "subcat_id": 125,
+    "language_id": 59,
+    "category_id": 13,
+    "category_name": "Ceza Muhakemesi Hukuku (CMK)",
+    "subcategory_name": "Soruşturma & Koruma Tedbirleri",
+    "slug": "hakimlik-cmk-koruma"
+  },
+  {
+    "subcat_id": 126,
+    "language_id": 59,
+    "category_id": 13,
+    "category_name": "Ceza Muhakemesi Hukuku (CMK)",
+    "subcategory_name": "Kovuşturma, Deliller ve İtiraz/İstinaf/Temyiz",
+    "slug": "hakimlik-cmk-kovusturma"
+  },
+  {
+    "subcat_id": 127,
+    "language_id": 59,
+    "category_id": 14,
+    "category_name": "Medeni Hukuk & Borçlar Hukuku",
+    "subcategory_name": "Medeni Hukuk (Kişiler, Eşya, Miras)",
+    "slug": "hakimlik-medeni"
+  },
+  {
+    "subcat_id": 128,
+    "language_id": 59,
+    "category_id": 14,
+    "category_name": "Medeni Hukuk & Borçlar Hukuku",
+    "subcategory_name": "Borçlar Hukuku Genel & Özel Hükümler",
+    "slug": "hakimlik-borclar"
+  },
+  {
+    "subcat_id": 129,
+    "language_id": 59,
+    "category_id": 15,
+    "category_name": "İdari Yargılama Usulü Kanunu (İYUK)",
+    "subcategory_name": "İdari Yargılama Usulü, Dava Açma ve Süreler",
+    "slug": "hakimlik-iyuk-sureler"
+  },
+  {
+    "subcat_id": 130,
+    "language_id": 59,
+    "category_id": 15,
+    "category_name": "İdari Yargılama Usulü Kanunu (İYUK)",
+    "subcategory_name": "Yürütmenin Durdurulması ve Kanun Yolları",
+    "slug": "hakimlik-iyuk-kanun-yollari"
+  },
+  {
+    "subcat_id": 94,
+    "language_id": 60,
+    "category_id": 66,
+    "category_name": "Anayasa Hukuku (HMGS)",
+    "subcategory_name": "Temel Hak ve Hürriyetler Rejimi",
+    "slug": "hmgs-ay-haklar"
+  },
+  {
+    "subcat_id": 95,
+    "language_id": 60,
+    "category_id": 66,
+    "category_name": "Anayasa Hukuku (HMGS)",
+    "subcategory_name": "Yasama, Yürütme ve Yargı Organları",
+    "slug": "hmgs-ay-organlar"
+  },
+  {
+    "subcat_id": 96,
+    "language_id": 60,
+    "category_id": 66,
+    "category_name": "Anayasa Hukuku (HMGS)",
+    "subcategory_name": "Anayasa Yargısı & Bireysel Başvuru",
+    "slug": "hmgs-ay-yargisi"
+  },
+  {
+    "subcat_id": 97,
+    "language_id": 60,
+    "category_id": 67,
+    "category_name": "İdare Hukuku & İYUK (HMGS)",
+    "subcategory_name": "Türkiye İdari Teşkilatı ve Yetki İlkeleri",
+    "slug": "hmgs-idare-teskilat"
+  },
+  {
+    "subcat_id": 98,
+    "language_id": 60,
+    "category_id": 67,
+    "category_name": "İdare Hukuku & İYUK (HMGS)",
+    "subcategory_name": "İdari İşlemler, İdari Sözleşmeler ve Kamu Malları",
+    "slug": "hmgs-idare-islemler"
+  },
+  {
+    "subcat_id": 99,
+    "language_id": 60,
+    "category_id": 67,
+    "category_name": "İdare Hukuku & İYUK (HMGS)",
+    "subcategory_name": "İYUK: İptal ve Tam Yargı Davaları, Süreler",
+    "slug": "hmgs-iyuk-davalar"
+  },
+  {
+    "subcat_id": 100,
+    "language_id": 60,
+    "category_id": 68,
+    "category_name": "Hukuk Muhakemeleri Kanunu - HMK (HMGS)",
+    "subcategory_name": "Görev, Yetki ve Yargı Yolu",
+    "slug": "hmgs-hmk-gorev-yetki"
+  },
+  {
+    "subcat_id": 101,
+    "language_id": 60,
+    "category_id": 68,
+    "category_name": "Hukuk Muhakemeleri Kanunu - HMK (HMGS)",
+    "subcategory_name": "Dava Şartları, İlk İtirazlar ve Dilekçeler",
+    "slug": "hmgs-hmk-dava-sartlari"
+  },
+  {
+    "subcat_id": 102,
+    "language_id": 60,
+    "category_id": 68,
+    "category_name": "Hukuk Muhakemeleri Kanunu - HMK (HMGS)",
+    "subcategory_name": "İspat Hukuku, Deliller ve Hüküm",
+    "slug": "hmgs-hmk-deliller"
+  },
+  {
+    "subcat_id": 103,
+    "language_id": 60,
+    "category_id": 68,
+    "category_name": "Hukuk Muhakemeleri Kanunu - HMK (HMGS)",
+    "subcategory_name": "Kanun Yolları: İstinaf ve Temyiz Süreçleri",
+    "slug": "hmgs-hmk-kanun-yollari"
+  },
+  {
+    "subcat_id": 104,
+    "language_id": 60,
+    "category_id": 69,
+    "category_name": "Ceza Hukuku Genel & Özel (HMGS)",
+    "subcategory_name": "Suçun Unsurları, Hukuka Uygunluk & Kusurluluk",
+    "slug": "hmgs-tck-genel"
+  },
+  {
+    "subcat_id": 105,
+    "language_id": 60,
+    "category_id": 69,
+    "category_name": "Ceza Hukuku Genel & Özel (HMGS)",
+    "subcategory_name": "Teşebbüs, İştirak ve İçtima Hükümleri",
+    "slug": "hmgs-tck-tesebbus-istirak"
+  },
+  {
+    "subcat_id": 106,
+    "language_id": 60,
+    "category_id": 69,
+    "category_name": "Ceza Hukuku Genel & Özel (HMGS)",
+    "subcategory_name": "Kişilere ve Malvarlığına Karşı Suçlar",
+    "slug": "hmgs-tck-ozel"
+  },
+  {
+    "subcat_id": 107,
+    "language_id": 60,
+    "category_id": 70,
+    "category_name": "Ceza Muhakemesi Hukuku - CMK (HMGS)",
+    "subcategory_name": "Soruşturma Evresi, İfade ve Sorgu",
+    "slug": "hmgs-cmk-sorusturma"
+  },
+  {
+    "subcat_id": 108,
+    "language_id": 60,
+    "category_id": 70,
+    "category_name": "Ceza Muhakemesi Hukuku - CMK (HMGS)",
+    "subcategory_name": "Koruma Tedbirleri (Yakalama, Tutuklama, Arama)",
+    "slug": "hmgs-cmk-koruma"
+  },
+  {
+    "subcat_id": 109,
+    "language_id": 60,
+    "category_id": 70,
+    "category_name": "Ceza Muhakemesi Hukuku - CMK (HMGS)",
+    "subcategory_name": "Kovuşturma Evresi, Duruşma ve Kanun Yolları",
+    "slug": "hmgs-cmk-kovusturma"
+  },
+  {
+    "subcat_id": 110,
+    "language_id": 60,
+    "category_id": 71,
+    "category_name": "Medeni Hukuk & Borçlar Hukuku (HMGS)",
+    "subcategory_name": "Kişiler, Aile ve Miras Hukuku",
+    "slug": "hmgs-medeni-kisiler-aile"
+  },
+  {
+    "subcat_id": 111,
+    "language_id": 60,
+    "category_id": 71,
+    "category_name": "Medeni Hukuk & Borçlar Hukuku (HMGS)",
+    "subcategory_name": "Eşya Hukuku, Zilyetlik ve Tapu Sicili",
+    "slug": "hmgs-medeni-esya"
+  },
+  {
+    "subcat_id": 112,
+    "language_id": 60,
+    "category_id": 71,
+    "category_name": "Medeni Hukuk & Borçlar Hukuku (HMGS)",
+    "subcategory_name": "Borçlar Hukuku: Sözleşmeler, Haksız Fiil ve İfa",
+    "slug": "hmgs-borclar-genel"
+  },
+  {
+    "subcat_id": 113,
+    "language_id": 60,
+    "category_id": 72,
+    "category_name": "Ticaret Hukuku (HMGS)",
+    "subcategory_name": "Ticari İşletme, Tacir ve Ticaret Sicili",
+    "slug": "hmgs-ticaret-isletme"
+  },
+  {
+    "subcat_id": 114,
+    "language_id": 60,
+    "category_id": 72,
+    "category_name": "Ticaret Hukuku (HMGS)",
+    "subcategory_name": "Şirketler Hukuku (Anonim ve Limited)",
+    "slug": "hmgs-ticaret-sirketler"
+  },
+  {
+    "subcat_id": 115,
+    "language_id": 60,
+    "category_id": 72,
+    "category_name": "Ticaret Hukuku (HMGS)",
+    "subcategory_name": "Kıymetli Evrak (Bono, Poliçe, Çek)",
+    "slug": "hmgs-ticaret-kiymetli-evrak"
+  },
+  {
+    "subcat_id": 116,
+    "language_id": 60,
+    "category_id": 73,
+    "category_name": "İcra ve İflas Hukuku (HMGS)",
+    "subcategory_name": "İlamsız İcra ve Ödeme Emrine İtiraz",
+    "slug": "hmgs-iik-ilamsiz-icra"
+  },
+  {
+    "subcat_id": 117,
+    "language_id": 60,
+    "category_id": 73,
+    "category_name": "İcra ve İflas Hukuku (HMGS)",
+    "subcategory_name": "Haciz, Satış ve Paraların Paylaştırılması",
+    "slug": "hmgs-iik-haciz-satis"
+  },
+  {
+    "subcat_id": 118,
+    "language_id": 60,
+    "category_id": 73,
+    "category_name": "İcra ve İflas Hukuku (HMGS)",
+    "subcategory_name": "İlamlı İcra, İhtiyati Haciz ve İflas Yolu",
+    "slug": "hmgs-iik-ilamli-iflas"
+  },
+  {
+    "subcat_id": 119,
+    "language_id": 60,
+    "category_id": 74,
+    "category_name": "Avukatlık Hukuku & Hukuk Felsefesi (HMGS)",
+    "subcategory_name": "1136 Sayılı Avukatlık Kanunu ve Disiplin",
+    "slug": "hmgs-avukatlik-kanunu"
+  },
+  {
+    "subcat_id": 120,
+    "language_id": 60,
+    "category_id": 74,
+    "category_name": "Avukatlık Hukuku & Hukuk Felsefesi (HMGS)",
+    "subcategory_name": "Hukuk Felsefesi, Sosyolojisi ve Hukuk Tarihi",
+    "slug": "hmgs-hukuk-felsefesi"
+  },
+  {
+    "subcat_id": 131,
+    "language_id": 61,
+    "category_id": 6,
+    "category_name": "İcra ve İflas Hukuku",
+    "subcategory_name": "İlamsız Takip, Ödeme Emri & İtiraz",
+    "slug": "icra-ilamsiz-takip"
+  },
+  {
+    "subcat_id": 132,
+    "language_id": 61,
+    "category_id": 6,
+    "category_name": "İcra ve İflas Hukuku",
+    "subcategory_name": "Haciz, Satış ve Paylaştırma Aşamaları",
+    "slug": "icra-haciz-satis"
+  },
+  {
+    "subcat_id": 133,
+    "language_id": 61,
+    "category_id": 6,
+    "category_name": "İcra ve İflas Hukuku",
+    "subcategory_name": "Kambiyo Senetlerine Özgü Haciz Yolu",
+    "slug": "icra-kambiyo-takibi"
+  },
+  {
+    "subcat_id": 134,
+    "language_id": 61,
+    "category_id": 6,
+    "category_name": "İcra ve İflas Hukuku",
+    "subcategory_name": "İlamlı İcra, Tahliye ve İflas Tasfiyesi",
+    "slug": "icra-ilamli-iflas"
+  },
+  {
+    "subcat_id": 135,
+    "language_id": 61,
+    "category_id": 7,
+    "category_name": "Ticaret Hukuku (Kıymetli Evrak & Şirketler)",
+    "subcategory_name": "Kıymetli Evrak: Bono, Poliçe, Çek Şekil Şartları",
+    "slug": "icra-kiymetli-evrak"
+  },
+  {
+    "subcat_id": 136,
+    "language_id": 61,
+    "category_id": 7,
+    "category_name": "Ticaret Hukuku (Kıymetli Evrak & Şirketler)",
+    "subcategory_name": "Ticaret Şirketleri ve Temsil Yetkisi",
+    "slug": "icra-ticaret-sirketler"
+  },
+  {
+    "subcat_id": 137,
+    "language_id": 61,
+    "category_id": 8,
+    "category_name": "Borçlar Hukuku Genel Hükümler",
+    "subcategory_name": "Borcun İfası, Temerrüt ve Faiz Türleri",
+    "slug": "icra-borclar-ifa-faiz"
+  },
+  {
+    "subcat_id": 138,
+    "language_id": 61,
+    "category_id": 8,
+    "category_name": "Borçlar Hukuku Genel Hükümler",
+    "subcategory_name": "Sözleşmenin Sona Ermesi ve Takas",
+    "slug": "icra-borclar-sona-erme"
+  },
+  {
+    "subcat_id": 139,
+    "language_id": 61,
+    "category_id": 9,
+    "category_name": "Hukuk Muhakemeleri Kanunu (HMK)",
+    "subcategory_name": "Tebligat ve Yargılama Süreleri",
+    "slug": "icra-hmk-tebligat-sureler"
+  },
+  {
+    "subcat_id": 140,
+    "language_id": 61,
+    "category_id": 9,
+    "category_name": "Hukuk Muhakemeleri Kanunu (HMK)",
+    "subcategory_name": "İhtiyati Haciz, İhtiyati Tedbir ve Deliller",
+    "slug": "icra-hmk-tedbirler"
+  },
+  {
+    "subcat_id": 141,
+    "language_id": 61,
+    "category_id": 10,
+    "category_name": "Harçlar Kanunu ve Damga Vergisi",
+    "subcategory_name": "Yargı ve İcra Harçları (Peşin, Başvurma, Tahsil)",
+    "slug": "icra-harclar-tarifesi"
+  },
+  {
+    "subcat_id": 142,
+    "language_id": 61,
+    "category_id": 10,
+    "category_name": "Harçlar Kanunu ve Damga Vergisi",
+    "subcategory_name": "Damga Vergisi ve Cezaevi Harcı Uygulamaları",
+    "slug": "icra-damga-vergisi"
+  },
+  {
+    "subcat_id": 143,
+    "language_id": 61,
+    "category_id": 38,
+    "category_name": "Anayasa",
+    "subcategory_name": "Temel Haklar ve Anayasal İlkeler",
+    "slug": "icra-anayasa-ilkeler"
+  },
+  {
+    "subcat_id": 164,
+    "language_id": 62,
+    "category_id": 82,
+    "category_name": "Anayasa Hukuku (Kaymakamlık)",
+    "subcategory_name": "T.C. Anayasası Temel İlkeler ve Hükümet Sistemi",
+    "slug": "kaym-ay-ilkeler"
+  },
+  {
+    "subcat_id": 165,
+    "language_id": 62,
+    "category_id": 82,
+    "category_name": "Anayasa Hukuku (Kaymakamlık)",
+    "subcategory_name": "Yasama, Yürütme ve Anayasa Yargısı",
+    "slug": "kaym-ay-organlar"
+  },
+  {
+    "subcat_id": 166,
+    "language_id": 62,
+    "category_id": 83,
+    "category_name": "İdare Hukuku & Teşkilat (Kaymakamlık)",
+    "subcategory_name": "İdare Hukuku Genel İlkeler ve İşlemler",
+    "slug": "kaym-idare-genel"
+  },
+  {
+    "subcat_id": 167,
+    "language_id": 62,
+    "category_id": 83,
+    "category_name": "İdare Hukuku & Teşkilat (Kaymakamlık)",
+    "subcategory_name": "Kamu Hizmetleri, Kolluk ve Sorumluluk",
+    "slug": "kaym-idare-kolluk"
+  },
+  {
+    "subcat_id": 168,
+    "language_id": 62,
+    "category_id": 84,
+    "category_name": "Türkiye İdari Yapısı & Yerel Yönetimler (Kaymakamlık)",
+    "subcategory_name": "İl İdaresi Kanunu, Vali ve Kaymakam Yetkileri",
+    "slug": "kaym-il-idaresi-vali"
+  },
+  {
+    "subcat_id": 169,
+    "language_id": 62,
+    "category_id": 84,
+    "category_name": "Türkiye İdari Yapısı & Yerel Yönetimler (Kaymakamlık)",
+    "subcategory_name": "Belediye, Büyükşehir ve Köy Kanunu",
+    "slug": "kaym-belediye-koy"
+  },
+  {
+    "subcat_id": 170,
+    "language_id": 62,
+    "category_id": 85,
+    "category_name": "Türkiye Ekonomisi & İktisat (Kaymakamlık)",
+    "subcategory_name": "Türkiye Ekonomisi ve Mali Politikalar",
+    "slug": "kaym-ekonomi-maliye"
+  },
+  {
+    "subcat_id": 171,
+    "language_id": 62,
+    "category_id": 86,
+    "category_name": "Atatürk İlkeleri & İnkılap Tarihi (Kaymakamlık)",
+    "subcategory_name": "Milli Mücadele ve Cumhuriyet Dönemi Reformları",
+    "slug": "kaym-tarih-reformlar"
+  },
+  {
+    "subcat_id": 144,
+    "language_id": 63,
+    "category_id": 75,
+    "category_name": "1982 Anayasası & Devlet Teşkilatı (GYS)",
+    "subcategory_name": "T.C. Anayasası Temel İlkeler ve Yargı Organları",
+    "slug": "gys-ay-yargi"
+  },
+  {
+    "subcat_id": 145,
+    "language_id": 63,
+    "category_id": 76,
+    "category_name": "657 Sayılı Devlet Memurları Kanunu (GYS)",
+    "subcategory_name": "Memurların Hakları, Ödevleri ve Yasaklar",
+    "slug": "gys-dmk-haklar-odevler"
+  },
+  {
+    "subcat_id": 146,
+    "language_id": 63,
+    "category_id": 76,
+    "category_name": "657 Sayılı Devlet Memurları Kanunu (GYS)",
+    "subcategory_name": "Disiplin Cezaları ve Soruşturma Usulü",
+    "slug": "gys-dmk-disiplin"
+  },
+  {
+    "subcat_id": 147,
+    "language_id": 63,
+    "category_id": 76,
+    "category_name": "657 Sayılı Devlet Memurları Kanunu (GYS)",
+    "subcategory_name": "Adaylık, Kademe İlerlemesi ve Görevden Uzaklaştırma",
+    "slug": "gys-dmk-ilerleme"
+  },
+  {
+    "subcat_id": 148,
+    "language_id": 63,
+    "category_id": 77,
+    "category_name": "7201 Sayılı Tebligat Kanunu (GYS)",
+    "subcategory_name": "Tebligat Usulleri ve Bilinen Adreste Tebligat",
+    "slug": "gys-tebligat-usul"
+  },
+  {
+    "subcat_id": 149,
+    "language_id": 63,
+    "category_id": 77,
+    "category_name": "7201 Sayılı Tebligat Kanunu (GYS)",
+    "subcategory_name": "Madde 21 ve 35 Göre Tebligat, Gece ve Tatil",
+    "slug": "gys-tebligat-madde21-35"
+  },
+  {
+    "subcat_id": 150,
+    "language_id": 63,
+    "category_id": 77,
+    "category_name": "7201 Sayılı Tebligat Kanunu (GYS)",
+    "subcategory_name": "Elektronik Tebligat (UETS) ve Memur Vasıtasıyla Tebliğ",
+    "slug": "gys-tebligat-uets"
+  },
+  {
+    "subcat_id": 151,
+    "language_id": 63,
+    "category_id": 78,
+    "category_name": "Yazı İşleri ve Mahkeme Büro Yönetimi (GYS)",
+    "subcategory_name": "Dava Açılışı, Tevzi ve Tensip İşlemleri",
+    "slug": "gys-yazi-tevzi-tensip"
+  },
+  {
+    "subcat_id": 152,
+    "language_id": 63,
+    "category_id": 78,
+    "category_name": "Yazı İşleri ve Mahkeme Büro Yönetimi (GYS)",
+    "subcategory_name": "Duruşma Tutanağı, Gerekçeli Karar ve Kesinleşme",
+    "slug": "gys-yazi-tutanak-kesinlesme"
+  },
+  {
+    "subcat_id": 153,
+    "language_id": 63,
+    "category_id": 78,
+    "category_name": "Yazı İşleri ve Mahkeme Büro Yönetimi (GYS)",
+    "subcategory_name": "Adli Emanet, Suç Eşyası ve Arşiv İşlemleri",
+    "slug": "gys-yazi-emanet-arsiv"
+  },
+  {
+    "subcat_id": 154,
+    "language_id": 63,
+    "category_id": 79,
+    "category_name": "Harçlar Kanunu ve Yargılama Giderleri (GYS)",
+    "subcategory_name": "Yargı Harçları (Peşin, Nispi, Maktu Harçlar)",
+    "slug": "gys-harclar-yargi"
+  },
+  {
+    "subcat_id": 155,
+    "language_id": 63,
+    "category_id": 79,
+    "category_name": "Harçlar Kanunu ve Yargılama Giderleri (GYS)",
+    "subcategory_name": "Gider Avansı, Delil Avansı ve İade İşlemleri",
+    "slug": "gys-gider-avansi"
+  },
+  {
+    "subcat_id": 156,
+    "language_id": 63,
+    "category_id": 80,
+    "category_name": "HMK & CMK Temel Yargılama İlkeleri (GYS)",
+    "subcategory_name": "HMK Temel İlkeler ve Yargılama Süreleri",
+    "slug": "gys-hmk-sureler"
+  },
+  {
+    "subcat_id": 157,
+    "language_id": 63,
+    "category_id": 80,
+    "category_name": "HMK & CMK Temel Yargılama İlkeleri (GYS)",
+    "subcategory_name": "CMK Soruşturma, İfade, Tutuklama ve Karar Türleri",
+    "slug": "gys-cmk-kararlar"
+  },
+  {
+    "subcat_id": 158,
+    "language_id": 63,
+    "category_id": 81,
+    "category_name": "UYAP Bilişim Sistemi ve Büro Mevzuatı (GYS)",
+    "subcategory_name": "UYAP Ekranları, Elektronik İmza ve Veri Girişi",
+    "slug": "gys-uyap-e-imza"
+  },
+  {
+    "subcat_id": 159,
+    "language_id": 63,
+    "category_id": 81,
+    "category_name": "UYAP Bilişim Sistemi ve Büro Mevzuatı (GYS)",
+    "subcategory_name": "Resmi Yazışma Kuralları ve Tebellüğ Belgeleri",
+    "slug": "gys-resmi-yazisma"
+  },
+  {
+    "subcat_id": 67,
+    "language_id": 66,
+    "category_id": 44,
+    "category_name": "Türkçe (KPSS Ortaöğretim)",
+    "subcategory_name": "Sözcük ve Paragrafta Anlam",
+    "slug": "ortaogretim-tr-1"
+  },
+  {
+    "subcat_id": 68,
+    "language_id": 66,
+    "category_id": 44,
+    "category_name": "Türkçe (KPSS Ortaöğretim)",
+    "subcategory_name": "Temel Dil Bilgisi & Noktalama",
+    "slug": "ortaogretim-tr-2"
+  },
+  {
+    "subcat_id": 85,
+    "language_id": 66,
+    "category_id": 45,
+    "category_name": "Matematik (KPSS Ortaöğretim)",
+    "subcategory_name": "Temel Matematik & SayÄ±lar",
+    "slug": "ort-mat-1"
+  },
+  {
+    "subcat_id": 86,
+    "language_id": 66,
+    "category_id": 45,
+    "category_name": "Matematik (KPSS Ortaöğretim)",
+    "subcategory_name": "Problemler ve SayÄ±sal MantÄ±k",
+    "slug": "ort-mat-2"
+  },
+  {
+    "subcat_id": 69,
+    "language_id": 66,
+    "category_id": 46,
+    "category_name": "Tarih (KPSS Ortaöğretim)",
+    "subcategory_name": "İlk Türk Devletleri ve İslamiyet",
+    "slug": "ortaogretim-tar-1"
+  },
+  {
+    "subcat_id": 70,
+    "language_id": 66,
+    "category_id": 46,
+    "category_name": "Tarih (KPSS Ortaöğretim)",
+    "subcategory_name": "Osmanlı Devleti & Kültür Medeniyet",
+    "slug": "ortaogretim-tar-2"
+  },
+  {
+    "subcat_id": 71,
+    "language_id": 66,
+    "category_id": 46,
+    "category_name": "Tarih (KPSS Ortaöğretim)",
+    "subcategory_name": "Milli Mücadele ve Atatürk İlkeleri",
+    "slug": "ortaogretim-tar-3"
+  },
+  {
+    "subcat_id": 72,
+    "language_id": 66,
+    "category_id": 47,
+    "category_name": "Coğrafya (KPSS Ortaöğretim)",
+    "subcategory_name": "Türkiye Coğrafyası & Bölgeler",
+    "slug": "ortaogretim-cog-1"
+  },
+  {
+    "subcat_id": 73,
+    "language_id": 66,
+    "category_id": 47,
+    "category_name": "Coğrafya (KPSS Ortaöğretim)",
+    "subcategory_name": "Ekonomik Faaliyetler ve Nüfus",
+    "slug": "ortaogretim-cog-2"
+  },
+  {
+    "subcat_id": 74,
+    "language_id": 66,
+    "category_id": 48,
+    "category_name": "Vatandaşlık & Güncel (KPSS Ortaöğretim)",
+    "subcategory_name": "Temel Hukuk Bilgisi & Anayasa",
+    "slug": "ortaogretim-vat-1"
+  },
+  {
+    "subcat_id": 75,
+    "language_id": 66,
+    "category_id": 48,
+    "category_name": "Vatandaşlık & Güncel (KPSS Ortaöğretim)",
+    "subcategory_name": "Güncel Olaylar ve Genel Kültür",
+    "slug": "ortaogretim-vat-2"
+  }
+]
