@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterquiz/commons/commons.dart';
 import 'package:flutterquiz/core/core.dart';
 import 'package:flutterquiz/features/ads/blocs/interstitial_ad_cubit.dart';
+import 'package:flutterquiz/features/auth/cubits/auth_cubit.dart';
 import 'package:flutterquiz/features/battle_room/cubits/battle_room_cubit.dart';
 import 'package:flutterquiz/features/battle_room/models/battle_room.dart';
 import 'package:flutterquiz/features/exam/models/exam.dart';
@@ -210,7 +211,9 @@ class _ResultScreenState extends State<ResultScreen> {
 
       await _updateResult();
 
-      await fetchUpdateUserDetails();
+      if (!context.read<AuthCubit>().isGuest) {
+        await fetchUpdateUserDetails();
+      }
     });
   }
 
@@ -218,6 +221,19 @@ class _ResultScreenState extends State<ResultScreen> {
     // We are calculating and showing result locally for exam and self challenge
     // so no need to call api for updating result.
     if (widget.quizType case QuizTypes.selfChallenge || QuizTypes.exam) return;
+
+    if (context.read<AuthCubit>().isGuest) {
+      context.read<SetCoinScoreCubit>().setLocalCoinScore(
+        totalQuestions: totalQuestions,
+        correctAnswer: correctAnswers,
+        percentage: winPercentage.toInt(),
+        earnCoin: 0,
+        earnScore: correctAnswers * 4,
+        currentLevel: int.tryParse(widget.level ?? '0') ?? 0,
+        totalLevels: 0,
+      );
+      return;
+    }
 
     final type = switch (widget.quizType) {
       QuizTypes.dailyQuiz => '1.1',

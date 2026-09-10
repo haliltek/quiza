@@ -189,4 +189,26 @@ final class SetCoinScoreCubit extends Cubit<SetCoinScoreState> {
       emit(SetCoinScoreFailure(e.toString()));
     }
   }
+
+  void setLocalCoinScore({
+    required int totalQuestions,
+    required int correctAnswer,
+    required int percentage,
+    int earnCoin = 0,
+    int earnScore = 0,
+    int currentLevel = 0,
+    int totalLevels = 0,
+  }) {
+    emit(
+      SetCoinScoreSuccess(
+        totalQuestions: totalQuestions,
+        correctAnswer: correctAnswer,
+        percentage: percentage,
+        earnCoin: earnCoin,
+        earnScore: earnScore,
+        currentLevel: currentLevel,
+        totalLevels: totalLevels,
+      ),
+    );
+  }
 }

@@ -9,10 +9,9 @@ import 'package:iabtcf_consent_info/iabtcf_consent_info.dart';
 
 class GdprHelper {
   /// For Testing
-  // static const _testIds = [
-  //   'E503DD4405B5CAACF12BCEDDD07A7332',
-  //   '35D4E39098439E5F50EAF7895CC1ADA9',
-  // ];
+  static const _testIds = [
+    'A270C5F69C8CD849579F63119340D442',
+  ];
 
   ///
   static Future<FormError?> initialize() async {
@@ -92,8 +91,8 @@ class GdprHelper {
     await MobileAds.instance.initialize();
 
     /// For Testing
-    // final configuration = RequestConfiguration(testDeviceIds: _testIds);
-    // await MobileAds.instance.updateRequestConfiguration(configuration);
+    final configuration = RequestConfiguration(testDeviceIds: _testIds);
+    await MobileAds.instance.updateRequestConfiguration(configuration);
   }
 
   static Future<void> reset() async {
