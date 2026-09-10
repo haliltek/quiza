@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterquiz/commons/commons.dart';
 import 'package:flutterquiz/core/core.dart';
-import 'package:flutterquiz/features/ads/blocs/rewarded_ad_cubit.dart';
+import 'package:flutterquiz/features/ads/ads.dart';
 import 'package:flutterquiz/features/profile_management/cubits/update_score_and_coins_cubit.dart';
 import 'package:flutterquiz/features/profile_management/cubits/user_details_cubit.dart';
 import 'package:flutterquiz/features/profile_management/profile_management_repository.dart';
@@ -916,6 +916,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
                   _buildShowOptionButton(),
                 ],
               ),
+              bottomNavigationBar: const BannerAdContainer(),
             ),
           );
         },

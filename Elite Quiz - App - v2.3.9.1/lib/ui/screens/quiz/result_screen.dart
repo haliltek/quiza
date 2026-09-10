@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterquiz/commons/commons.dart';
 import 'package:flutterquiz/core/core.dart';
-import 'package:flutterquiz/features/ads/blocs/interstitial_ad_cubit.dart';
+import 'package:flutterquiz/features/ads/ads.dart';
 import 'package:flutterquiz/features/auth/cubits/auth_cubit.dart';
 import 'package:flutterquiz/features/battle_room/cubits/battle_room_cubit.dart';
 import 'package:flutterquiz/features/battle_room/models/battle_room.dart';
@@ -1547,6 +1547,7 @@ class _ResultScreenState extends State<ResultScreen> {
               ],
             ),
           ),
+          bottomNavigationBar: const BannerAdContainer(),
         ),
       ),
     );

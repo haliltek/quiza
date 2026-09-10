@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterquiz/core/core.dart';
 import 'package:flutterquiz/features/ads/ads.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:flutterquiz/features/auth/auth_repository.dart';
 import 'package:flutterquiz/features/auth/cubits/auth_cubit.dart';
 import 'package:flutterquiz/features/badges/badges_repository.dart';
@@ -57,6 +60,14 @@ Future<Widget> initializeApp() async {
   await Firebase.initializeApp();
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: false,
+  );
+
+  unawaited(
+    MobileAds.instance.initialize().then((_) {
+      MobileAds.instance.updateRequestConfiguration(
+        RequestConfiguration(testDeviceIds: ['A270C5F69C8CD849579F63119340D442']),
+      );
+    }),
   );
 
   // Initialize Firebase Crashlytics

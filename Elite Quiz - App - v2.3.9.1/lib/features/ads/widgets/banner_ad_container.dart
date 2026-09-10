@@ -49,17 +49,23 @@ class _BannerAdContainer extends State<BannerAdContainer> {
     }
   }
 
-  Future<void> _loadGoogleBannerAd() async {
+  Future<void> _loadGoogleBannerAd({bool isFallback = false}) async {
     final config = context.read<SystemConfigCubit>();
-    final size =
-        await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-          MediaQuery.sizeOf(context).width.truncate(),
-        ) ??
-        AdSize.banner;
+    final width = MediaQuery.sizeOf(context).width.truncate();
+    final size = width > 0
+        ? (await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(width) ??
+            AdSize.banner)
+        : AdSize.banner;
+
+    final adUnitId = isFallback
+        ? (Platform.isIOS
+            ? SystemConfigCubit.googleTestBannerIOS
+            : SystemConfigCubit.googleTestBannerAndroid)
+        : config.googleBannerId;
 
     _localBannerAd = BannerAd(
       request: const AdRequest(),
-      adUnitId: config.googleBannerId,
+      adUnitId: adUnitId,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           if (mounted) {
@@ -67,8 +73,13 @@ class _BannerAdContainer extends State<BannerAdContainer> {
           }
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) async {
-          log('BannerAd failedToLoad: $error');
+          log('BannerAd failedToLoad ($adUnitId): $error');
           await ad.dispose();
+          _localBannerAd = null;
+          if (!isFallback && mounted) {
+            log('Retrying banner with Google official test ad unit');
+            await _loadGoogleBannerAd(isFallback: true);
+          }
         },
       ),
       size: size,

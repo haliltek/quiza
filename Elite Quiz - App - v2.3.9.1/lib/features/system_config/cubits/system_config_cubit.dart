@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterquiz/features/quiz/models/quiz_type.dart';
 import 'package:flutterquiz/features/system_config/model/ad_type.dart';
@@ -150,20 +151,65 @@ final class SystemConfigCubit extends Cubit<SystemConfigState> {
       ? systemConfigModel?.iosAppLink ?? ''
       : systemConfigModel?.appLink ?? '';
 
-  String get googleBannerId => (Platform.isIOS
-          ? systemConfigModel?.iosBannerId ?? ''
-          : systemConfigModel?.androidBannerId ?? '')
-      .trim();
+  static const googleTestBannerAndroid =
+      'ca-app-pub-3940256099942544/6300978111';
+  static const googleTestBannerIOS =
+      'ca-app-pub-3940256099942544/2934735716';
+  static const googleTestInterstitialAndroid =
+      'ca-app-pub-3940256099942544/1033173712';
+  static const googleTestInterstitialIOS =
+      'ca-app-pub-3940256099942544/4411468910';
+  static const googleTestRewardedAndroid =
+      'ca-app-pub-3940256099942544/5224354917';
+  static const googleTestRewardedIOS =
+      'ca-app-pub-3940256099942544/1712485313';
 
-  String get googleInterstitialAdId => (Platform.isIOS
-          ? systemConfigModel?.iosInterstitialId ?? ''
-          : systemConfigModel?.androidInterstitialId ?? '')
-      .trim();
+  String get googleBannerId {
+    if (kDebugMode) {
+      return Platform.isIOS ? googleTestBannerIOS : googleTestBannerAndroid;
+    }
+    final id = (Platform.isIOS
+            ? systemConfigModel?.iosBannerId ?? ''
+            : systemConfigModel?.androidBannerId ?? '')
+        .trim();
+    return id.isNotEmpty
+        ? id
+        : (Platform.isIOS ? googleTestBannerIOS : googleTestBannerAndroid);
+  }
 
-  String get googleRewardedAdId => (Platform.isIOS
-          ? systemConfigModel?.iosRewardedId ?? ''
-          : systemConfigModel?.androidRewardedId ?? '')
-      .trim();
+  String get googleInterstitialAdId {
+    if (kDebugMode) {
+      return Platform.isIOS
+          ? googleTestInterstitialIOS
+          : googleTestInterstitialAndroid;
+    }
+    final id = (Platform.isIOS
+            ? systemConfigModel?.iosInterstitialId ?? ''
+            : systemConfigModel?.androidInterstitialId ?? '')
+        .trim();
+    return id.isNotEmpty
+        ? id
+        : (Platform.isIOS
+            ? googleTestInterstitialIOS
+            : googleTestInterstitialAndroid);
+  }
+
+  String get googleRewardedAdId {
+    if (kDebugMode) {
+      return Platform.isIOS
+          ? googleTestRewardedIOS
+          : googleTestRewardedAndroid;
+    }
+    final id = (Platform.isIOS
+            ? systemConfigModel?.iosRewardedId ?? ''
+            : systemConfigModel?.androidRewardedId ?? '')
+        .trim();
+    return id.isNotEmpty
+        ? id
+        : (Platform.isIOS
+            ? googleTestRewardedIOS
+            : googleTestRewardedAndroid);
+  }
 
   bool get isForceUpdateEnable => systemConfigModel?.forceUpdate ?? false;
 
