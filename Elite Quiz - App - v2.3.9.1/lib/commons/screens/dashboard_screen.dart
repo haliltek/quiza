@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterquiz/commons/bottom_nav/bottom_nav.dart';
 import 'package:flutterquiz/core/core.dart';
-import 'package:flutterquiz/features/ads/ads.dart';
 import 'package:flutterquiz/features/auth/auth_repository.dart';
 import 'package:flutterquiz/features/auth/cubits/auth_cubit.dart';
 import 'package:flutterquiz/features/auth/cubits/refer_and_earn_cubit.dart';
@@ -321,27 +320,21 @@ class DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildBottomNavigationBar() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const BannerAdContainer(),
-        BottomNavBar(
-          navTabs: _navTabs,
-          currentIndex: _currTabIndex.value,
-          onTap: (idx) {
-            if (_currTabIndex.value != idx) {
-              HapticFeedback.mediumImpact();
-              _currTabIndex.value = idx;
-              _pageController.jumpToPage(idx);
-            } else {
-              HapticFeedback.mediumImpact();
-              // Call onTapTab() method of the current tab
-              // ignore: avoid_dynamic_calls
-              navTabsKeys[_navTabs[idx].tab]?.currentState?.onTapTab();
-            }
-          },
-        ),
-      ],
+    return BottomNavBar(
+      navTabs: _navTabs,
+      currentIndex: _currTabIndex.value,
+      onTap: (idx) {
+        if (_currTabIndex.value != idx) {
+          HapticFeedback.mediumImpact();
+          _currTabIndex.value = idx;
+          _pageController.jumpToPage(idx);
+        } else {
+          HapticFeedback.mediumImpact();
+          // Call onTapTab() method of the current tab
+          // ignore: avoid_dynamic_calls
+          navTabsKeys[_navTabs[idx].tab]?.currentState?.onTapTab();
+        }
+      },
     );
   }
 }

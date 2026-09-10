@@ -1547,7 +1547,6 @@ class _ResultScreenState extends State<ResultScreen> {
               ],
             ),
           ),
-          bottomNavigationBar: const BannerAdContainer(),
         ),
       ),
     );

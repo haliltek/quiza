@@ -916,7 +916,6 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
                   _buildShowOptionButton(),
                 ],
               ),
-              bottomNavigationBar: const BannerAdContainer(),
             ),
           );
         },
